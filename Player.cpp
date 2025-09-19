@@ -15,8 +15,9 @@ using namespace std;
         this -> level = level ;
         this -> difficult = difficult ;
         this -> maxhp = maxhp/difficult ;
-
-
+        if(this->hp >this-> maxhp) {
+            this->hp = this-> maxhp ;
+        }
     }
     int Player:: get_hp() {
         return hp ;
@@ -27,8 +28,11 @@ using namespace std;
     int Player:: get_level() {
         return level ;
     }
+    string Player:: get_Name() {
+        return name;
+    }
     int Player::set_hp(int hp) {
-        if (this->hp == maxhp) {
+        if (this->hp== maxhp&&hp>0) {
             cout << "Player already has max hp" << endl ;
             return 0 ;
         }
@@ -47,7 +51,7 @@ using namespace std;
         if(difficult>3 || difficult<1) {
             return 1 ;
         }
-        this -> difficult = difficult ;
+        maxhp = this->difficult*maxhp ;
         maxhp = maxhp/difficult;
         if(maxhp < hp) {
             hp = maxhp ;
