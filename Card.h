@@ -1,6 +1,3 @@
-//
-// Created by Admin on 20.09.2025.
-//
 
 #ifndef CARD_H
 #define CARD_H
@@ -10,9 +7,10 @@ private:
 public:
     Card();
     virtual Card* generate_card();
-    virtual bool is_in_hand();
-    virtual int use_card();
+    bool is_in_hand();
+    int use_card();
     virtual ~Card() = default;
+    void set_in_hand();
 };
 class Operator_card: public Card {
     private:
@@ -20,10 +18,9 @@ class Operator_card: public Card {
     public:
     Operator_card();
     Operator_card(char op);
-    virtual Operator_card* generate_card() override;
-    bool is_in_hand() override;
-    int use_card() override;
+    Operator_card* generate_card() override;
     ~Operator_card() override = default;
+    char get_op();
 
 };
 class Numb_card: public Card {
@@ -33,9 +30,7 @@ class Numb_card: public Card {
     Numb_card();
     Numb_card(int number);
     Numb_card* generate_card () override;
-    Numb_card* merge_cards(Numb_card& card1 , Operator_card& card2);
-    bool is_in_hand() override;
-    int use_card() override;
+    int get_numb();
     ~Numb_card() override = default;
 };
 
@@ -45,8 +40,7 @@ public:
     Special_card();
     Special_card(int number);
     Special_card* generate_card() override;
-    bool is_in_hand() override;
-    int use_card() override;
     ~Special_card() override = default;
 };
+char rand_operator();
 #endif //CARD_H
