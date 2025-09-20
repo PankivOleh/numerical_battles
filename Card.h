@@ -25,21 +25,22 @@ class Operator_card: public Card {
 };
 class Numb_card: public Card {
     private:
-    int number;
+    double number;
     public:
     Numb_card();
-    Numb_card(int number);
+    Numb_card(double number);
     Numb_card* generate_card () override;
-    int get_numb();
+    double get_numb();
     ~Numb_card() override = default;
 };
 
 class Special_card: public Card {
-    int number;
+    double number;
 public:
     Special_card();
-    Special_card(int number);
+    Special_card(double number);
     Special_card* generate_card() override ;
+    double get_numb();
     ~Special_card() override = default;
 };
 char rand_operator();

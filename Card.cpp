@@ -5,7 +5,6 @@
 // Функції
 
 char rand_operator() {
-    srand(time(NULL));
     int rand_num = rand() % 4;
     switch (rand_num) {
         case 0: return '+';
@@ -54,26 +53,28 @@ char Operator_card::get_op() {
 Numb_card::Numb_card() {
     this->number = 0;
 }
-Numb_card::Numb_card(int number) {
+Numb_card::Numb_card(double number) {
     this->number = number;
 }
-Numb_card* Numb_card::generate_card() {
-    srand(time(NULL));
+Numb_card* Numb_card::generate_card(){
     Numb_card *nb = new Numb_card( (rand()%9)+1);
     return nb;
 }
-int Numb_card::get_numb() {
+double Numb_card::get_numb() {
     return this->number;
 }
 //методи Secial_card
 Special_card::Special_card() {
     this->number = 0;
 }
-Special_card::Special_card(int number) {
+Special_card::Special_card(double number) {
     this->number = number;
 }
+double Special_card::get_numb() {
+    return this->number;
+}
+
 Special_card* Special_card::generate_card() {
-    srand(time(NULL));
     int i = rand();
     if(i&1) {
         Special_card *spc = new Special_card( ((rand()%9)+1)*-1);

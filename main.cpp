@@ -2,12 +2,14 @@
 #include "Hand.h"
 #include "Card.h"
 #include <iostream>
+#include <time.h>
 
 
 using namespace std;
 
 
-int main() {
+int main(){
+    srand(time(NULL));
     Player* Oleh = new Player("oleh" , 18 , 18 ,1 , 2);
     Oleh->set_hp(-3);
     cout<<(*Oleh).get_hp();
