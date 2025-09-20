@@ -39,7 +39,7 @@ class Special_card: public Card {
 public:
     Special_card();
     Special_card(int number);
-    Special_card* generate_card() override;
+    Special_card* generate_card() override ;
     ~Special_card() override = default;
 };
 char rand_operator();

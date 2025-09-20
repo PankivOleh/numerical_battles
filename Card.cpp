@@ -1,7 +1,6 @@
 #include <cstdio>
 #include <ctime>
 #include "Card.h"
-
 #include <cstdlib>
 // Функції
 

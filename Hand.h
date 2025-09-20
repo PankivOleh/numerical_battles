@@ -16,7 +16,7 @@ private:
     const int MAX_CARDS = 15;
     const int MAX_SPECIAL = 5;
     public:
-    Numb_card merge_cards(Numb_card &card1, Operator_card &card2 , Numb_card &card3);
+    static Numb_card merge_cards(Numb_card &card1, Operator_card &card2 , Numb_card &card3);
 };
 
 
