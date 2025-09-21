@@ -27,7 +27,7 @@ public:
     int set_dificult(int difficult);
     int set_level(int level);
     int set_hand();
-    Hand get_hand();
+    Hand* get_hand();
     ~Player();
 };
 

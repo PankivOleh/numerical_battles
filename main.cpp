@@ -39,7 +39,9 @@ int main(){
     card1 = Hand::merge_cards(*card5 , *card7 ,*card6);
     cout<<card1.get_numb();
 
-    cout<<Oleh->get_hand();
+    cout<<*(Oleh->get_hand());
+    cout<<Oleh->get_hand()->get_special_count()<<endl;
+    cout<<Oleh->get_hand()->get_numb_count()<<endl;
 
 
     return 0;

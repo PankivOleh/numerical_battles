@@ -10,7 +10,7 @@ using namespace std;
 
 
 
-    Player::Player(string name, int maxhp, int hp, int level, int difficult ,Hand* hand ) {
+Player::Player(string name, int maxhp, int hp, int level, int difficult ,Hand* hand ) {
         this->name = name ;
         this ->hp = hp ;
         this -> level = level ;
@@ -21,19 +21,19 @@ using namespace std;
         }
         this -> hand = hand ;
     }
-    int Player:: get_hp() {
+int Player:: get_hp() {
         return hp ;
     }
-    int Player:: get_difficult() {
+int Player:: get_difficult() {
         return difficult ;
     }
-    int Player:: get_level() {
+int Player:: get_level() {
         return level ;
     }
-    string Player:: get_Name() {
+string Player:: get_Name() {
         return name;
     }
-    int Player::set_hp(int hp) {
+int Player::set_hp(int hp) {
         if (this->hp== maxhp&&hp>0) {
             cout << "Player already has max hp" << endl ;
             return 0 ;
@@ -49,7 +49,7 @@ using namespace std;
         }
         return 0 ;
     }
-    int Player::set_dificult(int difficult) {\
+int Player::set_dificult(int difficult) {\
         if(difficult>3 || difficult<1) {
             return 1 ;
         }
@@ -60,7 +60,7 @@ using namespace std;
         }
         return 0 ;
     }
-    int Player::set_level(int level) {
+int Player::set_level(int level) {
         if(level<1) {
             return 1 ;
         }
@@ -71,7 +71,12 @@ using namespace std;
         this -> level = level ;
         return 0 ;
     }
-    Hand Player::get_hand() {
-        return *hand;
+Hand* Player::get_hand() {
+        return hand;
     }
-    Player:: ~Player(){}
+int Player::set_hand() {
+        hand->generate_hand();
+        return 0 ;
+    }
+
+Player:: ~Player(){}
