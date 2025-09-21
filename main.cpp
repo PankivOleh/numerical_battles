@@ -10,7 +10,9 @@ using namespace std;
 
 int main(){
     srand(time(NULL));
-    Player* Oleh = new Player("oleh" , 18 , 18 ,1 , 2);
+    Hand* hand = new Hand();
+    hand->generate_hand();
+    Player* Oleh = new Player("oleh" , 18 , 18 ,1 , 2 , hand);
     Oleh->set_hp(-3);
     cout<<(*Oleh).get_hp();
     Oleh->set_hp(6);
@@ -36,6 +38,8 @@ int main(){
     cout<<card5->get_numb()<<card7->get_op()<<card6->get_numb()<<'=';
     card1 = Hand::merge_cards(*card5 , *card7 ,*card6);
     cout<<card1.get_numb();
+
+    cout<<Oleh->get_hand();
 
 
     return 0;

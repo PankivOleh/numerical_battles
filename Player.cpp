@@ -3,13 +3,14 @@
 //
 
 #include "Player.h"
+#include "Hand.h"
 #include <iostream>
 
 using namespace std;
 
 
 
-    Player::Player(string name, int maxhp, int hp, int level, int difficult) {
+    Player::Player(string name, int maxhp, int hp, int level, int difficult ,Hand* hand ) {
         this->name = name ;
         this ->hp = hp ;
         this -> level = level ;
@@ -18,6 +19,7 @@ using namespace std;
         if(this->hp >this-> maxhp) {
             this->hp = this-> maxhp ;
         }
+        this -> hand = hand ;
     }
     int Player:: get_hp() {
         return hp ;
@@ -68,5 +70,8 @@ using namespace std;
         }
         this -> level = level ;
         return 0 ;
+    }
+    Hand Player::get_hand() {
+        return *hand;
     }
     Player:: ~Player(){}
