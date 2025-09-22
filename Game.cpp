@@ -1,0 +1,90 @@
+#include <iostream>
+#include "Game.h"
+using namespace std;
+
+// методи не призначені для пайтону
+Player* Game::getPlayer() {
+    return player;
+}
+int Game::generateN() {
+    int n ;
+    if(rand() & 1) {
+        n = 3;
+    }else {
+        n = 2;
+    }
+    return n;
+}
+vector<Numb_card *> Game::generateNumbChoise(int n) {
+    vector<Numb_card *> ch;
+    for(int i = 0; i < n; i++) {
+        Numb_card *c = new Numb_card();
+        ch.push_back(c->generate_card());
+    }
+    return ch;
+}
+vector<Operator_card *> Game::generateOperatorChoise(int n) {
+    vector<Operator_card *> ch;
+    for(int i = 0; i < 5-n; i++) {
+        Operator_card *c = new Operator_card();
+        ch.push_back(c->generate_card());
+    }
+    return ch;
+}
+vector<Special_card*>Game::generateSpecialChoise() {
+    vector<Special_card *> ch;
+    for(int i = 0; i < 3; i++) {
+        Special_card *c = new Special_card();
+        ch.push_back(c->generate_card());
+    }
+}
+
+//методи для пайтону
+vector<Card*>* Game::generateChoise() {
+    int n = generateN();
+    vector<Operator_card *> ch = generateOperatorChoise(n);
+    vector<Numb_card *> numb = generateNumbChoise(n);
+    vector<Card*>* pool = new vector<Card*>;
+    for(int i = 0; i < n; i++) {
+        pool->push_back(numb[i]);
+    }
+    for(;n<5;n++) {
+        pool->push_back(ch[n]);
+    }
+    return pool;
+}
+int Game::afterChoise(int n  , vector<Card*>* ch) {
+    Card* c = (*ch)[n];
+    if (Numb_card* nc =  dynamic_cast<Numb_card*>(c)) {
+        player->get_hand()->add_numb_card(*nc);
+    } else if (Operator_card* oc = dynamic_cast<Operator_card*>(c)) {
+        player->get_hand()->add_operator_card(*oc);
+    }
+    for(auto it :ch) {
+        delete it;
+    }
+    ch->clear();
+    return 0;
+}
+Game::Game(Player *player) {
+    this->player = player;
+}
+Game::Game() {}
+int Game::setHand() {
+    player->set_hand();
+}
+void Game::mergeCard(int n1, int n2, int n3) {
+    vector<Numb_card*>* v1 = player->get_hand()->get_numb_hand();
+    vector<Operator_card*>* v2 = player->get_hand()->get_operator_hand();
+    Numb_card* nc1 = (*v1)[n1];
+    Numb_card* nc2 = (*v1)[n3];
+    Operator_card* oc1 = (*v2)[n2];
+    Numb_card newc = (player->get_hand()->merge_cards(nc1 , oc1 , nc2));
+    player->get_hand()->check_hand();
+    player->get_hand()->add_numb_card(newc);
+}
+
+
+
+
+

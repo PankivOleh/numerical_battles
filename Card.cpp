@@ -48,7 +48,6 @@ Operator_card *Operator_card::generate_card() {
 char Operator_card::get_op() {
     return this->op;
 }
-
 //методи Numb_card
 Numb_card::Numb_card() {
     this->number = 0;
@@ -73,7 +72,6 @@ Special_card::Special_card(double number) {
 double Special_card::get_numb() {
     return this->number;
 }
-
 Special_card* Special_card::generate_card() {
     int i = rand();
     if(i&1) {

@@ -26,7 +26,7 @@ int main(){
     cout<<endl<<card1.get_numb()<<card3.get_op()<<card2.get_numb();
     cout<<card3.is_in_hand();
     Numb_card card4 = Numb_card();
-    card4 = Hand::merge_cards(card1,card3,card2);
+    card4 = Hand::merge_cards(&card1,&card3,&card2);
     cout<<'='<<card4.get_numb();
     cout<<card3.is_in_hand();
     cout<<endl;
@@ -36,12 +36,19 @@ int main(){
     Operator_card* card7 = new Operator_card();
     card7 = card7->generate_card();
     cout<<card5->get_numb()<<card7->get_op()<<card6->get_numb()<<'=';
-    card1 = Hand::merge_cards(*card5 , *card7 ,*card6);
+    card1 = Hand::merge_cards(card5 , card7 ,card6);
     cout<<card1.get_numb();
 
     cout<<*(Oleh->get_hand());
     cout<<Oleh->get_hand()->get_special_count()<<endl;
     cout<<Oleh->get_hand()->get_numb_count()<<endl;
+    cout<<"enter number of card to use:"<<endl;
+    int n;
+    cin>>n;
+    hand->get_numb_card(n-1)->use_card();
+    cout<<*(Oleh->get_hand());
+    hand->check_hand();
+    cout<<*(Oleh->get_hand());
 
 
     return 0;

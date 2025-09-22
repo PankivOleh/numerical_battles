@@ -1,14 +1,8 @@
-//
-// Created by Oleg on 18.09.2025.
-//
-
 #include "Player.h"
 #include "Hand.h"
 #include <iostream>
 
 using namespace std;
-
-
 
 Player::Player(string name, int maxhp, int hp, int level, int difficult ,Hand* hand ) {
         this->name = name ;
@@ -78,5 +72,4 @@ int Player::set_hand() {
         hand->generate_hand();
         return 0 ;
     }
-
 Player:: ~Player(){}
