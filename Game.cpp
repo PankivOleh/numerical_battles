@@ -31,6 +31,8 @@ vector<Operator_card *> Game::generateOperatorChoise(int n) {
     }
     return ch;
 }
+
+//методи для пайтону
 vector<Special_card*>Game::generateSpecialChoise() {
     vector<Special_card *> ch;
     for(int i = 0; i < 3; i++) {
@@ -38,8 +40,14 @@ vector<Special_card*>Game::generateSpecialChoise() {
         ch.push_back(c->generate_card());
     }
 }
-
-//методи для пайтону
+int Game::afterSpecialChoise(int n, vector<Special_card*> choices) {
+    getPlayer()->get_hand()->add_special_card(*choices[n]);
+    for(auto c : choices) {
+        delete c;
+    }
+    choices.clear();
+    return 0;
+}
 vector<Card*>* Game::generateChoise() {
     int n = generateN();
     vector<Operator_card *> ch = generateOperatorChoise(n);
@@ -83,6 +91,18 @@ void Game::mergeCard(int n1, int n2, int n3) {
     player->get_hand()->check_hand();
     player->get_hand()->add_numb_card(newc);
 }
+int Game::get_numb_count() {
+    return getPlayer()->get_hand()->get_numb_count();
+}
+int Game::get_operator_count() {
+    return getPlayer()->get_hand()->get_operator_count();
+}
+int Game::get_special_count() {
+    return player->get_hand()->get_special_count();
+}
+
+
+
 
 
 

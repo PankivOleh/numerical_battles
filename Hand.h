@@ -1,7 +1,3 @@
-//
-// Created by Admin on 20.09.2025.
-//
-
 #ifndef HAND_H
 #define HAND_H
 #include<vector>
