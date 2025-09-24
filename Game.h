@@ -25,6 +25,8 @@ public:
     int get_numb_count();
     int get_operator_count();
     int get_special_count();
+
+    double calculate(string numbers);
 };
 
 #endif //GAME_H

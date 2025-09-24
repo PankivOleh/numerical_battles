@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stack>
 #include "Game.h"
 using namespace std;
 
@@ -100,6 +101,73 @@ int Game::get_operator_count() {
 int Game::get_special_count() {
     return player->get_hand()->get_special_count();
 }
+bool ismorepreor(char op) {
+    switch (op) {
+        case '+': return 1;
+        case '-': return 1;
+        case '*': return 2;
+        case '/': return 2;
+        case '^': return 3;
+        default: return 0;
+    }
+}
+double Game::calculate(string numbers) {
+    stack<char> opstack;
+    vector<string> arr(numbers.size());
+    stack<double> numbstack;
+    int i = 0;
+    for(auto it  = numbers.begin(); it != numbers.end(); it++) {
+        if (std::isdigit(*it)||*it == '.') {
+            while (isdigit(*it)||*it == '.') {
+                (arr[i]).push_back(*it);
+                if(it!=(numbers.end()-1)) {
+                    it++;
+                }else{it++;break;}
+            }
+            it--;
+            i++;
+            continue;
+        }
+        if(opstack.empty()) {
+            opstack.push(*it);
+        }else {
+            if(ismorepreor(opstack.top())>=ismorepreor(*it)&& (ismorepreor(opstack.top())!=0&&ismorepreor(*it)!=0)) {
+                arr[i].push_back(opstack.top());
+                opstack.pop();
+            }else {
+                if(ismorepreor(opstack.top())!=0&&ismorepreor(opstack.top())==0) {}
+                opstack.push(*it);
+            }
+
+        }
+        i++;
+    }
+    while(!opstack.empty()) {
+        arr[i].push_back(opstack.top());
+        opstack.pop();
+        i++;
+    }
+    double numb1 , numb2 , result;
+    for(auto it = arr.begin(); it != arr.end(); it++) {
+        if(std::isdigit((*it)[0])) {
+            numbstack.push(stod(*it));
+        }else {
+            numb1 = numbstack.top();
+            numbstack.pop();
+            numb2 = numbstack.top();
+            numbstack.pop();
+            if (*it == "+"){result = numb1 + numb2;}
+            else if (*it == "-"){result = numb1 - numb2;}
+            else if (*it == "*"){result = numb1 * numb2;}
+            else if (*it == "/"){result = numb1 / numb2;}
+            }
+            numbstack.push(result);
+        }
+    result = numbstack.top();
+    numbstack.pop();
+    return result;
+}
+
 
 
 
