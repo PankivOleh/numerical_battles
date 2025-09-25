@@ -69,8 +69,8 @@ int Game::afterChoise(int n  , vector<Card*>* ch) {
     } else if (Operator_card* oc = dynamic_cast<Operator_card*>(c)) {
         player->get_hand()->add_operator_card(*oc);
     }
-    for(auto it :ch) {
-        delete it;
+    for(auto it = ch->begin(); it != ch->end(); it++) {
+        delete *it;
     }
     ch->clear();
     return 0;
@@ -80,7 +80,7 @@ Game::Game(Player *player) {
 }
 Game::Game() {}
 int Game::setHand() {
-    player->set_hand();
+    getPlayer()->get_hand()->generate_hand();
 }
 void Game::mergeCard(int n1, int n2, int n3) {
     vector<Numb_card*>* v1 = player->get_hand()->get_numb_hand();
@@ -101,7 +101,7 @@ int Game::get_operator_count() {
 int Game::get_special_count() {
     return player->get_hand()->get_special_count();
 }
-bool ismorepreor(char op) {
+int ismorepreor(char op) {
     switch (op) {
         case '+': return 1;
         case '-': return 1;
@@ -111,42 +111,57 @@ bool ismorepreor(char op) {
         default: return 0;
     }
 }
-double Game::calculate(string numbers) {
+
+vector<string> Game::createarr(string numbers) {
     stack<char> opstack;
-    vector<string> arr(numbers.size());
-    stack<double> numbstack;
-    int i = 0;
+    vector<string> arr;
+    string num ;
+    string op;
     for(auto it  = numbers.begin(); it != numbers.end(); it++) {
         if (std::isdigit(*it)||*it == '.') {
             while (isdigit(*it)||*it == '.') {
-                (arr[i]).push_back(*it);
+                num.push_back(*it);
                 if(it!=(numbers.end()-1)) {
                     it++;
                 }else{it++;break;}
             }
             it--;
-            i++;
+            arr.push_back(num);
+            num.clear();
             continue;
         }
         if(opstack.empty()) {
             opstack.push(*it);
         }else {
-            if(ismorepreor(opstack.top())>=ismorepreor(*it)&& (ismorepreor(opstack.top())!=0&&ismorepreor(*it)!=0)) {
-                arr[i].push_back(opstack.top());
-                opstack.pop();
+            if(ismorepreor(opstack.top())>=ismorepreor(*it)) {
+                while (!opstack.empty()) {
+                    if (ismorepreor(opstack.top())>=ismorepreor(*it)) {
+                        op.push_back(opstack.top());
+                        arr.push_back(op);
+                        op.clear();
+                        opstack.pop();
+                    } else {break;}
+                }
+                opstack.push(*it);
             }else {
-                if(ismorepreor(opstack.top())!=0&&ismorepreor(opstack.top())==0) {}
                 opstack.push(*it);
             }
 
         }
-        i++;
     }
     while(!opstack.empty()) {
-        arr[i].push_back(opstack.top());
+        op.push_back(opstack.top());
+        arr.push_back(op);
+        op.clear();
         opstack.pop();
-        i++;
     }
+    return arr;
+}
+
+
+double Game::calculate(string numbers) {\
+    stack <double> numbstack;
+    vector<string> arr = createarr(numbers);
     double numb1 , numb2 , result;
     for(auto it = arr.begin(); it != arr.end(); it++) {
         if(std::isdigit((*it)[0])) {
@@ -157,11 +172,11 @@ double Game::calculate(string numbers) {
             numb2 = numbstack.top();
             numbstack.pop();
             if (*it == "+"){result = numb1 + numb2;}
-            else if (*it == "-"){result = numb1 - numb2;}
+            else if (*it == "-"){result = numb2 - numb1;}
             else if (*it == "*"){result = numb1 * numb2;}
-            else if (*it == "/"){result = numb1 / numb2;}
-            }
+            else if (*it == "/"){result = numb2 / numb1;}
             numbstack.push(result);
+        }
         }
     result = numbstack.top();
     numbstack.pop();

@@ -25,7 +25,7 @@ public:
     int get_numb_count();
     int get_operator_count();
     int get_special_count();
-
+    vector<string> createarr(string numbers);
     double calculate(string numbers);
 };
 

@@ -1,15 +1,11 @@
-#include "Player.h"
-#include "Hand.h"
-#include "Card.h"
+#include "Game.h"
 #include <iostream>
 #include <time.h>
 
 
 using namespace std;
 
-
-int main(){
-    srand(time(NULL));
+void test1(void) {
     Hand* hand = new Hand();
     hand->generate_hand();
     Player* Oleh = new Player("oleh" , 18 , 18 ,1 , 2 , hand);
@@ -49,6 +45,20 @@ int main(){
     cout<<*(Oleh->get_hand());
     hand->check_hand();
     cout<<*(Oleh->get_hand());
+
+}
+
+int main(){
+    srand(time(NULL));
+    Hand* hand = new Hand();
+    Player* player = new Player("Oleh" , 18 , 18 ,1 , 2 , hand);
+    Game* game = new Game(player);
+    hand->generate_hand();
+    cout<<endl<<*game->getPlayer()->get_hand()<<endl;
+    double n;
+    n = game->calculate("70.5+5+12/2+4*5");
+    cout<<n<<endl;
+
 
 
     return 0;

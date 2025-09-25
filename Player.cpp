@@ -69,7 +69,7 @@ Hand* Player::get_hand() {
         return hand;
     }
 int Player::set_hand() {
-        hand->generate_hand();
+        this ->hand->generate_hand();
         return 0 ;
     }
 Player:: ~Player(){}
