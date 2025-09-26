@@ -1,6 +1,9 @@
 #include <iostream>
 #include <stack>
 #include "Game.h"
+
+#include <math.h>
+#include <valarray>
 using namespace std;
 
 // методи не призначені для пайтону
@@ -175,6 +178,7 @@ double Game::calculate(string numbers) {\
             else if (*it == "-"){result = numb2 - numb1;}
             else if (*it == "*"){result = numb1 * numb2;}
             else if (*it == "/"){result = numb2 / numb1;}
+            else if(*it == "^"){result = pow(numb2,numb1);}
             numbstack.push(result);
         }
         }

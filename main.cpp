@@ -56,7 +56,7 @@ int main(){
     hand->generate_hand();
     cout<<endl<<*game->getPlayer()->get_hand()<<endl;
     double n;
-    n = game->calculate("70.5+5+12/2+4*5");
+    n = game->calculate("4-2+4*2/3*3^3");
     cout<<n<<endl;
 
 
