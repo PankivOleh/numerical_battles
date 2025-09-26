@@ -2,6 +2,7 @@
 #include "Hand.h"
 #include <iostream>
 #include <ostream>
+#include <math.h>
 
 Numb_card Hand:: merge_cards(Numb_card *card1, Operator_card *card2 , Numb_card *card3) {
     double numb1 = card1->get_numb() , numb2 = card3->get_numb();
@@ -10,6 +11,7 @@ Numb_card Hand:: merge_cards(Numb_card *card1, Operator_card *card2 , Numb_card 
         case '/': numb2==0? numb1 =0: numb1 /=numb2;;break;
         case '*': numb1 *= numb2;break;
         case '-': numb1 -= numb2;break;
+        case '^': numb1 = pow(numb1,numb2);break;
     }
     card1->use_card();
     card2->use_card();

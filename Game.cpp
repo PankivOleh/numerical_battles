@@ -86,12 +86,15 @@ int Game::setHand() {
     getPlayer()->get_hand()->generate_hand();
 }
 void Game::mergeCard(int n1, int n2, int n3) {
+    n1--;
+    n2--;
+    n3--;
     vector<Numb_card*>* v1 = player->get_hand()->get_numb_hand();
     vector<Operator_card*>* v2 = player->get_hand()->get_operator_hand();
     Numb_card* nc1 = (*v1)[n1];
     Numb_card* nc2 = (*v1)[n3];
     Operator_card* oc1 = (*v2)[n2];
-    Numb_card newc = (player->get_hand()->merge_cards(nc1 , oc1 , nc2));
+    Numb_card newc = (this->getPlayer()->get_hand()->merge_cards(nc1,oc1,nc2));
     player->get_hand()->check_hand();
     player->get_hand()->add_numb_card(newc);
 }
@@ -178,7 +181,7 @@ double Game::calculate(string numbers) {\
             else if (*it == "-"){result = numb2 - numb1;}
             else if (*it == "*"){result = numb1 * numb2;}
             else if (*it == "/"){result = numb2 / numb1;}
-            else if(*it == "^"){result = pow(numb2,numb1);}
+            else if(*it == "^") {result = pow(numb2,numb1);}
             numbstack.push(result);
         }
         }

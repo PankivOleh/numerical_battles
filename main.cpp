@@ -57,6 +57,12 @@ int main(){
     cout<<endl<<*game->getPlayer()->get_hand()<<endl;
     double n;
     n = game->calculate("4-2+4*2/3*3^3");
+    cout<<"select cards to merge:"<<endl;
+    int n1 , n2 , n3;
+    cin>>n1>>n2>>n3;
+    game->mergeCard(n1 , n2 , n3);
+    player->get_hand()->check_hand();
+    cout<<endl<<*game->getPlayer()->get_hand()<<endl;
     cout<<n<<endl;
 
 
