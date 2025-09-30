@@ -4,11 +4,13 @@
 
 #ifndef GAME_H
 #define GAME_H
+#include "Enemy.h"
 #include "Player.h"
 
 class Player;
 class Game {
     Player* player;
+    Enemy* enemy;
 public:
     Game();
     Game(Player* player);
@@ -27,6 +29,8 @@ public:
     int get_special_count();
     vector<string> createarr(string numbers);
     double calculate(string numbers);
+    double createEnemy();
+    int checkNumber(double numb1 , double numb2);
 };
 
 #endif //GAME_H

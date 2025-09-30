@@ -1,7 +1,6 @@
 #include <iostream>
 #include <stack>
 #include "Game.h"
-
 #include <math.h>
 #include <valarray>
 using namespace std;
@@ -117,6 +116,23 @@ int ismorepreor(char op) {
         default: return 0;
     }
 }
+double Game::createEnemy() {
+    this->enemy = new Enemy(this->getPlayer()->get_level() , this->getPlayer()->get_difficult());
+    return this->enemy->getNumber();
+}
+int Game::checkNumber(double numb1, double numb2) {
+    int difficult = this->getPlayer()->get_difficult();
+    double dif = abs(numb1 - numb2);
+    if(dif == 0 ) {
+        return 0;
+    }
+    if(dif < 5 - difficult) {
+        return 1;
+    }
+    return -1;
+}
+
+
 
 vector<string> Game::createarr(string numbers) {
     stack<char> opstack;
