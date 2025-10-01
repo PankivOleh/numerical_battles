@@ -31,6 +31,7 @@ public:
     double calculate(string numbers);
     double createEnemy();
     int checkNumber(double numb1 , double numb2);
+    
 };
 
 #endif //GAME_H

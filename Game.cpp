@@ -134,12 +134,18 @@ int Game::checkNumber(double numb1, double numb2) {
 
 
 
+
 vector<string> Game::createarr(string numbers) {
     stack<char> opstack;
     vector<string> arr;
     string num ;
     string op;
+    int p;
     for(auto it  = numbers.begin(); it != numbers.end(); it++) {
+        if(*it =='-'&&(!std::isdigit(*(it-1))||it==numbers.begin())) {
+            num.push_back(*it);
+            continue;
+        }
         if (std::isdigit(*it)||*it == '.') {
             while (isdigit(*it)||*it == '.') {
                 num.push_back(*it);
@@ -186,7 +192,7 @@ double Game::calculate(string numbers) {\
     vector<string> arr = createarr(numbers);
     double numb1 , numb2 , result;
     for(auto it = arr.begin(); it != arr.end(); it++) {
-        if(std::isdigit((*it)[0])) {
+        if(std::isdigit((*it)[0])||std::isdigit((*it)[1])) {
             numbstack.push(stod(*it));
         }else {
             numb1 = numbstack.top();
@@ -197,10 +203,17 @@ double Game::calculate(string numbers) {\
             else if (*it == "-"){result = numb2 - numb1;}
             else if (*it == "*"){result = numb1 * numb2;}
             else if (*it == "/"){result = numb2 / numb1;}
-            else if(*it == "^") {result = pow(numb2,numb1);}
+            else if(*it == "^") {
+                if(numb2<0&&numb1!=std::floor(numb1)) {
+                    result = pow(numb2,floor(numb1));
+                }
+                else {
+                    result = pow(numb2,numb1);
+                }
+            }
             numbstack.push(result);
         }
-        }
+    }
     result = numbstack.top();
     numbstack.pop();
     return result;
