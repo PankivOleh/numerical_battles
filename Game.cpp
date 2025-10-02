@@ -34,78 +34,6 @@ vector<Operator_card *> Game::generateOperatorChoise(int n) {
     }
     return ch;
 }
-
-//методи для пайтону
-vector<Special_card*>Game::generateSpecialChoise() {
-    vector<Special_card *> ch;
-    for(int i = 0; i < 3; i++) {
-        Special_card *c = new Special_card();
-        ch.push_back(c->generate_card());
-    }
-}
-int Game::afterSpecialChoise(int n, vector<Special_card*> choices) {
-    getPlayer()->get_hand()->add_special_card(*choices[n]);
-    for(auto c : choices) {
-        delete c;
-    }
-    choices.clear();
-    return 0;
-}
-vector<Card*>* Game::generateChoise() {
-    int n = generateN();
-    vector<Operator_card *> ch = generateOperatorChoise(n);
-    vector<Numb_card *> numb = generateNumbChoise(n);
-    vector<Card*>* pool = new vector<Card*>;
-    for(int i = 0; i < n; i++) {
-        pool->push_back(numb[i]);
-    }
-    for(;n<5;n++) {
-        pool->push_back(ch[n]);
-    }
-    return pool;
-}
-int Game::afterChoise(int n  , vector<Card*>* ch) {
-    Card* c = (*ch)[n];
-    if (Numb_card* nc =  dynamic_cast<Numb_card*>(c)) {
-        player->get_hand()->add_numb_card(*nc);
-    } else if (Operator_card* oc = dynamic_cast<Operator_card*>(c)) {
-        player->get_hand()->add_operator_card(*oc);
-    }
-    for(auto it = ch->begin(); it != ch->end(); it++) {
-        delete *it;
-    }
-    ch->clear();
-    return 0;
-}
-Game::Game(Player *player) {
-    this->player = player;
-}
-Game::Game() {}
-int Game::setHand() {
-    getPlayer()->get_hand()->generate_hand();
-}
-void Game::mergeCard(int n1, int n2, int n3) {
-    n1--;
-    n2--;
-    n3--;
-    vector<Numb_card*>* v1 = player->get_hand()->get_numb_hand();
-    vector<Operator_card*>* v2 = player->get_hand()->get_operator_hand();
-    Numb_card* nc1 = (*v1)[n1];
-    Numb_card* nc2 = (*v1)[n3];
-    Operator_card* oc1 = (*v2)[n2];
-    Numb_card newc = (this->getPlayer()->get_hand()->merge_cards(nc1,oc1,nc2));
-    player->get_hand()->check_hand();
-    player->get_hand()->add_numb_card(newc);
-}
-int Game::get_numb_count() {
-    return getPlayer()->get_hand()->get_numb_count();
-}
-int Game::get_operator_count() {
-    return getPlayer()->get_hand()->get_operator_count();
-}
-int Game::get_special_count() {
-    return player->get_hand()->get_special_count();
-}
 int ismorepreor(char op) {
     switch (op) {
         case '+': return 1;
@@ -116,25 +44,6 @@ int ismorepreor(char op) {
         default: return 0;
     }
 }
-double Game::createEnemy() {
-    this->enemy = new Enemy(this->getPlayer()->get_level() , this->getPlayer()->get_difficult());
-    return this->enemy->getNumber();
-}
-int Game::checkNumber(double numb1, double numb2) {
-    int difficult = this->getPlayer()->get_difficult();
-    double dif = abs(numb1 - numb2);
-    if(dif == 0 ) {
-        return 0;
-    }
-    if(dif < 5 - difficult) {
-        return 1;
-    }
-    return -1;
-}
-
-
-
-
 vector<string> Game::createarr(string numbers) {
     stack<char> opstack;
     vector<string> arr;
@@ -184,6 +93,114 @@ vector<string> Game::createarr(string numbers) {
         opstack.pop();
     }
     return arr;
+}
+Game::Game() {}
+//методи для пайтону
+
+
+vector<Special_card*>Game::generateSpecialChoise() {
+    vector<Special_card *> ch;
+    for(int i = 0; i < 3; i++) {
+        Special_card *c = new Special_card();
+        ch.push_back(c->generate_card());
+    }
+    return ch;
+}
+int Game::afterSpecialChoise(int n, vector<Special_card*> choices) {
+    getPlayer()->get_hand()->add_special_card(*choices[n]);
+    for(auto c : choices) {
+        delete c;
+    }
+    choices.clear();
+    return 0;
+}
+vector<Card*>* Game::generateChoise() {
+    int n = generateN();
+    vector<Operator_card *> ch = generateOperatorChoise(n);
+    vector<Numb_card *> numb = generateNumbChoise(n);
+    vector<Card*>* pool = new vector<Card*>;
+    for(int i = 0; i < n; i++) {
+        pool->push_back(numb[i]);
+    }
+    for(;n<5;n++) {
+        pool->push_back(ch[n]);
+    }
+    return pool;
+}
+int Game::afterChoise(int n  , vector<Card*>* ch) {
+    Card* c = (*ch)[n];
+    if (Numb_card* nc =  dynamic_cast<Numb_card*>(c)) {
+        player->get_hand()->add_numb_card(*nc);
+    } else if (Operator_card* oc = dynamic_cast<Operator_card*>(c)) {
+        player->get_hand()->add_operator_card(*oc);
+    }
+    for(auto it = ch->begin(); it != ch->end(); it++) {
+        delete *it;
+    }
+    ch->clear();
+    return 0;
+}
+
+
+Game::Game(Player *player) {
+    this->player = player;
+}
+int Game::setHand() {
+    getPlayer()->get_hand()->generate_hand();
+}
+void Game::mergeCard(int n1, int n2, int n3) {
+    n1--;
+    n2--;
+    n3--;
+    vector<Numb_card*>* v1 = player->get_hand()->get_numb_hand();
+    vector<Operator_card*>* v2 = player->get_hand()->get_operator_hand();
+    Numb_card* nc1 = (*v1)[n1];
+    Numb_card* nc2 = (*v1)[n3];
+    Operator_card* oc1 = (*v2)[n2];
+    Numb_card newc = (this->getPlayer()->get_hand()->merge_cards(nc1,oc1,nc2));
+    player->get_hand()->check_hand();
+    player->get_hand()->add_numb_card(newc);
+}
+int Game::get_numb_count() {
+    return getPlayer()->get_hand()->get_numb_count();
+}
+int Game::get_operator_count() {
+    return getPlayer()->get_hand()->get_operator_count();
+}
+int Game::get_special_count() {
+    return player->get_hand()->get_special_count();
+}
+Enemy* Game::createEnemy() {
+    this->enemy = new Enemy(this->getPlayer()->get_level() , this->getPlayer()->get_difficult());
+    return this->enemy;
+}
+
+int Game::checkNumber(double numb1, double numb2) {
+    double difficult = this->getPlayer()->get_difficult();
+    double dif = abs(numb1 - numb2);
+    if(numb2 >= 1||numb2 <=-1) {
+        if(dif == 0 ) {
+            return 0;
+        }
+        if(dif < 6 - difficult) {
+            return 1;
+        }
+    }else {
+        if(dif<0.01) {
+            return 0;
+        }
+        if(dif<(0.06 - difficult/100)) {
+            return 1;
+        }
+    }
+    return -1;
+}
+void Game::useSpecial(int n) {
+    n--;
+    int numb = this->getPlayer()->get_hand()->get_special_card(n)->get_numb();
+    this->enemy->setNumber(numb);
+    this->getPlayer()->get_hand()->get_special_card(n)->use_card();
+    this->player->get_hand()->check_hand();
 }
 
 

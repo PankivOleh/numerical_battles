@@ -57,6 +57,11 @@ Numb_card::Numb_card(double number) {
     this->number = number;
 }
 Numb_card* Numb_card::generate_card(){
+    int i = rand()%3;
+    if(i==2) {
+        Numb_card *nb = new Numb_card( ((rand()%9)+1)*-1);
+        return nb;
+    }
     Numb_card *nb = new Numb_card( (rand()%9)+1);
     return nb;
 }

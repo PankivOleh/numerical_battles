@@ -66,6 +66,21 @@ int main(){
     cout<<endl<<*game->getPlayer()->get_hand()<<endl;
     */
     cout<<n<<endl;
+    player->set_level(10);
+    Enemy* en = game->createEnemy();
+    cout<<en->getNumber()<<endl;
+    int k;
+    cin>>k;
+    game->useSpecial(k);
+    cout<<endl<<*game->getPlayer()->get_hand()<<endl;
+    cout<<en->getNumber()<<endl;
+    string str;
+    cin>>str;
+    double calc = game->calculate(str);
+    cout<<calc<<endl;
+    cout<<endl<<game->checkNumber(calc , en->getNumber())<<endl;
+
+
 
 
 

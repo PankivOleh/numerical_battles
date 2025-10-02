@@ -29,9 +29,9 @@ public:
     int get_special_count();
     vector<string> createarr(string numbers);
     double calculate(string numbers);
-    double createEnemy();
+    Enemy* createEnemy();
     int checkNumber(double numb1 , double numb2);
-    
+    void useSpecial(int n);
 };
 
 #endif //GAME_H

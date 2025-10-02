@@ -10,6 +10,7 @@ class Enemy {
 public:
     Enemy(int level , int difficult);
     double getNumber();
+    double setNumber(int number);
 };
 
 #endif //ENEMY_H
