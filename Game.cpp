@@ -235,7 +235,28 @@ double Game::calculate(string numbers) {\
     numbstack.pop();
     return result;
 }
-
+void Game::cleanall() {
+    if(enemy) {
+        delete enemy;
+        enemy = nullptr;
+    }
+    if(player&&player->get_hand()) {
+        for(auto c:player->get_hand()->get_numb_hand()) {
+            delete c;
+        }
+        player->get_hand()->get_numb_hand()->clear();
+        for(auto c:player->get_hand()->get_operator_hand()) {
+            delete c;
+        }
+        player->get_hand()->get_operator_hand()->clear();
+        for(auto c:player->get_hand()->get_special_hand()) {
+            delete c;
+        }
+        player->get_hand()->get_special_hand()->clear();
+    }
+    delete player;
+    player = nullptr;
+}
 
 
 

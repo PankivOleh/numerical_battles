@@ -32,6 +32,7 @@ public:
     Enemy* createEnemy();
     int checkNumber(double numb1 , double numb2);
     void useSpecial(int n);
+    void cleanall();
 };
 
 #endif //GAME_H
