@@ -7,6 +7,7 @@ using namespace std;
 
 class Player;
 
+
 class Hand {
 private:
     vector<Numb_card*> Numb_hand;
