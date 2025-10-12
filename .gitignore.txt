@@ -1,0 +1,58 @@
+# =====================
+# Python
+# =====================
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Distribution / packaging
+build/
+dist/
+*.egg
+*.egg-info/
+*.wheel
+
+# Python IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs / databases
+*.log
+*.sqlite3
+
+# =====================
+# C++
+# =====================
+# Build / binaries
+build/
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+
+# CLion specific
+cmake-build-debug/
+cmake-build-release/
+CMakeFiles/
+CMakeCache.txt
+*.user
+*.user.* 
+*.ninja
+
+# =====================
+# OS files
+# =====================
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
