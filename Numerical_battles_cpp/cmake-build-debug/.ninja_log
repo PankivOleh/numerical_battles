@@ -1,0 +1,15 @@
+# ninja log v6
+62	1423	7820060804859983	CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.obj	88513c2143377efa
+15	1246	7820059085588656	CMakeFiles/Numerical_battles_cpp.dir/numerical_battles/Card.cpp.obj	e4de943d0ab3a642
+171	2485	7820059087160106	CMakeFiles/Numerical_battles_cpp.dir/numerical_battles/Enemy.cpp.obj	646bdacaab7e5944
+589	2781	7820059091333839	CMakeFiles/Numerical_battles_cpp.dir/numerical_battles/main.cpp.obj	25f70ab2f2699f97
+607	2514	7820059091513838	CMakeFiles/Numerical_battles_cpp.dir/numerical_battles/Player.cpp.obj	9cf6722eacf41bc3
+367	3096	7820059089102014	CMakeFiles/Numerical_battles_cpp.dir/numerical_battles/Hand.cpp.obj	910bc26f0b660f8a
+188	3383	7820059087319960	CMakeFiles/Numerical_battles_cpp.dir/numerical_battles/Game.cpp.obj	7b218e3d124eb77b
+73	644	7820060804965464	CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.obj	7ac8e1f37c1b5fd6
+52	1456	7820060804759811	CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.obj	9f05f71fd3bee0c3
+3	1678	7820060804269797	CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.obj	b1751f18144a04eb
+130	9168	7820060805545512	CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.obj	af1580bd129c9438
+3	539	7820062213857093	build.ninja	71c0c087f6a1930c
+8	603	7820062108751880	CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.obj	ebe85e47d3eac34e
+604	9390	7820062114706971	PyAPI_py.cp313-win_amd64.pyd	be1c3766fb6419e9

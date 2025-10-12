@@ -1,0 +1,5 @@
+C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/cmake-build-debug/CMakeFiles/PyAPI_py.dir
+C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/cmake-build-debug/pybind11/CMakeFiles/edit_cache.dir
+C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/cmake-build-debug/pybind11/CMakeFiles/rebuild_cache.dir
