@@ -1,0 +1,9 @@
+# ninja log v6
+6	1556	7819993634298839	build.ninja	71c0c087f6a1930c
+203	665	7819993747492217	CMakeFiles/Numerical_Battles_API.dir/numerical_battles/Card.cpp.obj	48dd6a82c3ef26c9
+71	1099	7819993746161287	CMakeFiles/Numerical_Battles_API.dir/numerical_battles/Player.cpp.obj	2a11069a1d0214a7
+234	1300	7819993747792220	CMakeFiles/Numerical_Battles_API.dir/numerical_battles/Enemy.cpp.obj	78dc0701f8a8f05
+85	1549	7819993746301243	CMakeFiles/Numerical_Battles_API.dir/numerical_battles/Hand.cpp.obj	1800b1a83fb2efc8
+60	1823	7819993746051148	CMakeFiles/Numerical_Battles_API.dir/numerical_battles/Game.cpp.obj	c7633fc5a9839a86
+4	10188	7819993745491148	CMakeFiles/Numerical_Battles_API.dir/numerical_battles/PyAPI.cpp.obj	113c72d98eebb5d
+10190	16881	7819993847358563	Numerical_Battles_API.cp313-win_amd64.pyd	8bad7f7305ead74e
