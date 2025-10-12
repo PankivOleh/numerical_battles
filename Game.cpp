@@ -97,7 +97,6 @@ vector<string> Game::createarr(string numbers) {
 Game::Game() {}
 //методи для пайтону
 
-
 vector<Special_card*>Game::generateSpecialChoise() {
     vector<Special_card *> ch;
     for(int i = 0; i < 3; i++) {
