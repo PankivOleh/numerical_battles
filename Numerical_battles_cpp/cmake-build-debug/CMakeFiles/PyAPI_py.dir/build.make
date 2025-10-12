@@ -68,114 +68,114 @@ include CMakeFiles/PyAPI_py.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/PyAPI_py.dir/flags.make
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.obj: CMakeFiles/PyAPI_py.dir/flags.make
-CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.obj: CMakeFiles/PyAPI_py.dir/includes_CXX.rsp
-CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.obj: C:/Users/Oleg/Desktop/vs\ codes/Numerical_Battles/Numerical_battles_cpp/numerical_battles/Game.cpp
-CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.obj: CMakeFiles/PyAPI_py.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.obj -MF CMakeFiles\PyAPI_py.dir\numerical_battles\Game.cpp.obj.d -o CMakeFiles\PyAPI_py.dir\numerical_battles\Game.cpp.obj -c "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Game.cpp"
+CMakeFiles/PyAPI_py.dir/Game.cpp.obj: CMakeFiles/PyAPI_py.dir/flags.make
+CMakeFiles/PyAPI_py.dir/Game.cpp.obj: CMakeFiles/PyAPI_py.dir/includes_CXX.rsp
+CMakeFiles/PyAPI_py.dir/Game.cpp.obj: C:/Users/Oleg/Desktop/vs\ codes/Numerical_Battles/Numerical_battles_cpp/Game.cpp
+CMakeFiles/PyAPI_py.dir/Game.cpp.obj: CMakeFiles/PyAPI_py.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/PyAPI_py.dir/Game.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PyAPI_py.dir/Game.cpp.obj -MF CMakeFiles\PyAPI_py.dir\Game.cpp.obj.d -o CMakeFiles\PyAPI_py.dir\Game.cpp.obj -c "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Game.cpp"
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Game.cpp" > CMakeFiles\PyAPI_py.dir\numerical_battles\Game.cpp.i
+CMakeFiles/PyAPI_py.dir/Game.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PyAPI_py.dir/Game.cpp.i"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Game.cpp" > CMakeFiles\PyAPI_py.dir\Game.cpp.i
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Game.cpp" -o CMakeFiles\PyAPI_py.dir\numerical_battles\Game.cpp.s
+CMakeFiles/PyAPI_py.dir/Game.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PyAPI_py.dir/Game.cpp.s"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Game.cpp" -o CMakeFiles\PyAPI_py.dir\Game.cpp.s
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.obj: CMakeFiles/PyAPI_py.dir/flags.make
-CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.obj: CMakeFiles/PyAPI_py.dir/includes_CXX.rsp
-CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.obj: C:/Users/Oleg/Desktop/vs\ codes/Numerical_Battles/Numerical_battles_cpp/numerical_battles/Player.cpp
-CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.obj: CMakeFiles/PyAPI_py.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.obj -MF CMakeFiles\PyAPI_py.dir\numerical_battles\Player.cpp.obj.d -o CMakeFiles\PyAPI_py.dir\numerical_battles\Player.cpp.obj -c "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Player.cpp"
+CMakeFiles/PyAPI_py.dir/Player.cpp.obj: CMakeFiles/PyAPI_py.dir/flags.make
+CMakeFiles/PyAPI_py.dir/Player.cpp.obj: CMakeFiles/PyAPI_py.dir/includes_CXX.rsp
+CMakeFiles/PyAPI_py.dir/Player.cpp.obj: C:/Users/Oleg/Desktop/vs\ codes/Numerical_Battles/Numerical_battles_cpp/Player.cpp
+CMakeFiles/PyAPI_py.dir/Player.cpp.obj: CMakeFiles/PyAPI_py.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/PyAPI_py.dir/Player.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PyAPI_py.dir/Player.cpp.obj -MF CMakeFiles\PyAPI_py.dir\Player.cpp.obj.d -o CMakeFiles\PyAPI_py.dir\Player.cpp.obj -c "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Player.cpp"
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Player.cpp" > CMakeFiles\PyAPI_py.dir\numerical_battles\Player.cpp.i
+CMakeFiles/PyAPI_py.dir/Player.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PyAPI_py.dir/Player.cpp.i"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Player.cpp" > CMakeFiles\PyAPI_py.dir\Player.cpp.i
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Player.cpp" -o CMakeFiles\PyAPI_py.dir\numerical_battles\Player.cpp.s
+CMakeFiles/PyAPI_py.dir/Player.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PyAPI_py.dir/Player.cpp.s"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Player.cpp" -o CMakeFiles\PyAPI_py.dir\Player.cpp.s
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.obj: CMakeFiles/PyAPI_py.dir/flags.make
-CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.obj: CMakeFiles/PyAPI_py.dir/includes_CXX.rsp
-CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.obj: C:/Users/Oleg/Desktop/vs\ codes/Numerical_Battles/Numerical_battles_cpp/numerical_battles/Hand.cpp
-CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.obj: CMakeFiles/PyAPI_py.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.obj -MF CMakeFiles\PyAPI_py.dir\numerical_battles\Hand.cpp.obj.d -o CMakeFiles\PyAPI_py.dir\numerical_battles\Hand.cpp.obj -c "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Hand.cpp"
+CMakeFiles/PyAPI_py.dir/Hand.cpp.obj: CMakeFiles/PyAPI_py.dir/flags.make
+CMakeFiles/PyAPI_py.dir/Hand.cpp.obj: CMakeFiles/PyAPI_py.dir/includes_CXX.rsp
+CMakeFiles/PyAPI_py.dir/Hand.cpp.obj: C:/Users/Oleg/Desktop/vs\ codes/Numerical_Battles/Numerical_battles_cpp/Hand.cpp
+CMakeFiles/PyAPI_py.dir/Hand.cpp.obj: CMakeFiles/PyAPI_py.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/PyAPI_py.dir/Hand.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PyAPI_py.dir/Hand.cpp.obj -MF CMakeFiles\PyAPI_py.dir\Hand.cpp.obj.d -o CMakeFiles\PyAPI_py.dir\Hand.cpp.obj -c "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Hand.cpp"
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Hand.cpp" > CMakeFiles\PyAPI_py.dir\numerical_battles\Hand.cpp.i
+CMakeFiles/PyAPI_py.dir/Hand.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PyAPI_py.dir/Hand.cpp.i"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Hand.cpp" > CMakeFiles\PyAPI_py.dir\Hand.cpp.i
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Hand.cpp" -o CMakeFiles\PyAPI_py.dir\numerical_battles\Hand.cpp.s
+CMakeFiles/PyAPI_py.dir/Hand.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PyAPI_py.dir/Hand.cpp.s"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Hand.cpp" -o CMakeFiles\PyAPI_py.dir\Hand.cpp.s
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.obj: CMakeFiles/PyAPI_py.dir/flags.make
-CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.obj: CMakeFiles/PyAPI_py.dir/includes_CXX.rsp
-CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.obj: C:/Users/Oleg/Desktop/vs\ codes/Numerical_Battles/Numerical_battles_cpp/numerical_battles/Card.cpp
-CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.obj: CMakeFiles/PyAPI_py.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.obj -MF CMakeFiles\PyAPI_py.dir\numerical_battles\Card.cpp.obj.d -o CMakeFiles\PyAPI_py.dir\numerical_battles\Card.cpp.obj -c "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Card.cpp"
+CMakeFiles/PyAPI_py.dir/Card.cpp.obj: CMakeFiles/PyAPI_py.dir/flags.make
+CMakeFiles/PyAPI_py.dir/Card.cpp.obj: CMakeFiles/PyAPI_py.dir/includes_CXX.rsp
+CMakeFiles/PyAPI_py.dir/Card.cpp.obj: C:/Users/Oleg/Desktop/vs\ codes/Numerical_Battles/Numerical_battles_cpp/Card.cpp
+CMakeFiles/PyAPI_py.dir/Card.cpp.obj: CMakeFiles/PyAPI_py.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/PyAPI_py.dir/Card.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PyAPI_py.dir/Card.cpp.obj -MF CMakeFiles\PyAPI_py.dir\Card.cpp.obj.d -o CMakeFiles\PyAPI_py.dir\Card.cpp.obj -c "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Card.cpp"
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Card.cpp" > CMakeFiles\PyAPI_py.dir\numerical_battles\Card.cpp.i
+CMakeFiles/PyAPI_py.dir/Card.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PyAPI_py.dir/Card.cpp.i"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Card.cpp" > CMakeFiles\PyAPI_py.dir\Card.cpp.i
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Card.cpp" -o CMakeFiles\PyAPI_py.dir\numerical_battles\Card.cpp.s
+CMakeFiles/PyAPI_py.dir/Card.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PyAPI_py.dir/Card.cpp.s"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Card.cpp" -o CMakeFiles\PyAPI_py.dir\Card.cpp.s
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.obj: CMakeFiles/PyAPI_py.dir/flags.make
-CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.obj: CMakeFiles/PyAPI_py.dir/includes_CXX.rsp
-CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.obj: C:/Users/Oleg/Desktop/vs\ codes/Numerical_Battles/Numerical_battles_cpp/numerical_battles/PyAPI.cpp
-CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.obj: CMakeFiles/PyAPI_py.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.obj -MF CMakeFiles\PyAPI_py.dir\numerical_battles\PyAPI.cpp.obj.d -o CMakeFiles\PyAPI_py.dir\numerical_battles\PyAPI.cpp.obj -c "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\PyAPI.cpp"
+CMakeFiles/PyAPI_py.dir/PyAPI.cpp.obj: CMakeFiles/PyAPI_py.dir/flags.make
+CMakeFiles/PyAPI_py.dir/PyAPI.cpp.obj: CMakeFiles/PyAPI_py.dir/includes_CXX.rsp
+CMakeFiles/PyAPI_py.dir/PyAPI.cpp.obj: C:/Users/Oleg/Desktop/vs\ codes/Numerical_Battles/Numerical_battles_cpp/PyAPI.cpp
+CMakeFiles/PyAPI_py.dir/PyAPI.cpp.obj: CMakeFiles/PyAPI_py.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/PyAPI_py.dir/PyAPI.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PyAPI_py.dir/PyAPI.cpp.obj -MF CMakeFiles\PyAPI_py.dir\PyAPI.cpp.obj.d -o CMakeFiles\PyAPI_py.dir\PyAPI.cpp.obj -c "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\PyAPI.cpp"
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\PyAPI.cpp" > CMakeFiles\PyAPI_py.dir\numerical_battles\PyAPI.cpp.i
+CMakeFiles/PyAPI_py.dir/PyAPI.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PyAPI_py.dir/PyAPI.cpp.i"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\PyAPI.cpp" > CMakeFiles\PyAPI_py.dir\PyAPI.cpp.i
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\PyAPI.cpp" -o CMakeFiles\PyAPI_py.dir\numerical_battles\PyAPI.cpp.s
+CMakeFiles/PyAPI_py.dir/PyAPI.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PyAPI_py.dir/PyAPI.cpp.s"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\PyAPI.cpp" -o CMakeFiles\PyAPI_py.dir\PyAPI.cpp.s
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.obj: CMakeFiles/PyAPI_py.dir/flags.make
-CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.obj: CMakeFiles/PyAPI_py.dir/includes_CXX.rsp
-CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.obj: C:/Users/Oleg/Desktop/vs\ codes/Numerical_Battles/Numerical_battles_cpp/numerical_battles/Enemy.cpp
-CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.obj: CMakeFiles/PyAPI_py.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.obj"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.obj -MF CMakeFiles\PyAPI_py.dir\numerical_battles\Enemy.cpp.obj.d -o CMakeFiles\PyAPI_py.dir\numerical_battles\Enemy.cpp.obj -c "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Enemy.cpp"
+CMakeFiles/PyAPI_py.dir/Enemy.cpp.obj: CMakeFiles/PyAPI_py.dir/flags.make
+CMakeFiles/PyAPI_py.dir/Enemy.cpp.obj: CMakeFiles/PyAPI_py.dir/includes_CXX.rsp
+CMakeFiles/PyAPI_py.dir/Enemy.cpp.obj: C:/Users/Oleg/Desktop/vs\ codes/Numerical_Battles/Numerical_battles_cpp/Enemy.cpp
+CMakeFiles/PyAPI_py.dir/Enemy.cpp.obj: CMakeFiles/PyAPI_py.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\cmake-build-debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/PyAPI_py.dir/Enemy.cpp.obj"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/PyAPI_py.dir/Enemy.cpp.obj -MF CMakeFiles\PyAPI_py.dir\Enemy.cpp.obj.d -o CMakeFiles\PyAPI_py.dir\Enemy.cpp.obj -c "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Enemy.cpp"
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.i"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Enemy.cpp" > CMakeFiles\PyAPI_py.dir\numerical_battles\Enemy.cpp.i
+CMakeFiles/PyAPI_py.dir/Enemy.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/PyAPI_py.dir/Enemy.cpp.i"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Enemy.cpp" > CMakeFiles\PyAPI_py.dir\Enemy.cpp.i
 
-CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.s"
-	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\numerical_battles\Enemy.cpp" -o CMakeFiles\PyAPI_py.dir\numerical_battles\Enemy.cpp.s
+CMakeFiles/PyAPI_py.dir/Enemy.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/PyAPI_py.dir/Enemy.cpp.s"
+	C:\PROGRA~1\JETBRA~1\CLION2~1.2\bin\mingw\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Oleg\Desktop\vs codes\Numerical_Battles\Numerical_battles_cpp\Enemy.cpp" -o CMakeFiles\PyAPI_py.dir\Enemy.cpp.s
 
 # Object files for target PyAPI_py
 PyAPI_py_OBJECTS = \
-"CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.obj" \
-"CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.obj" \
-"CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.obj" \
-"CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.obj" \
-"CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.obj" \
-"CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.obj"
+"CMakeFiles/PyAPI_py.dir/Game.cpp.obj" \
+"CMakeFiles/PyAPI_py.dir/Player.cpp.obj" \
+"CMakeFiles/PyAPI_py.dir/Hand.cpp.obj" \
+"CMakeFiles/PyAPI_py.dir/Card.cpp.obj" \
+"CMakeFiles/PyAPI_py.dir/PyAPI.cpp.obj" \
+"CMakeFiles/PyAPI_py.dir/Enemy.cpp.obj"
 
 # External object files for target PyAPI_py
 PyAPI_py_EXTERNAL_OBJECTS =
 
-PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.obj
-PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.obj
-PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.obj
-PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.obj
-PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.obj
-PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.obj
+PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/Game.cpp.obj
+PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/Player.cpp.obj
+PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/Hand.cpp.obj
+PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/Card.cpp.obj
+PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/PyAPI.cpp.obj
+PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/Enemy.cpp.obj
 PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/build.make
 PyAPI_py.cp313-win_amd64.pyd: C:/Users/Oleg/AppData/Local/Programs/Python/Python313/libs/python313.lib
 PyAPI_py.cp313-win_amd64.pyd: CMakeFiles/PyAPI_py.dir/linkLibs.rsp

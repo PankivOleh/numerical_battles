@@ -570,16 +570,15 @@ _Python_DEVELOPMENT_EMBED_SIGNATURE:INTERNAL=837e43844623b3efc16419bdd275d292
 _Python_DEVELOPMENT_MODULE_SIGNATURE:INTERNAL=837e43844623b3efc16419bdd275d292
 //Development reason failure
 _Python_Development_REASON_FAILURE:INTERNAL=
-//Path to a program.
 _Python_EXECUTABLE:INTERNAL=C:/Users/Oleg/AppData/Local/Programs/Python/Python313/python.exe
-//Path to a file.
 _Python_INCLUDE_DIR:INTERNAL=C:/Users/Oleg/AppData/Local/Programs/Python/Python313/include
 //Python Properties
 _Python_INTERPRETER_PROPERTIES:INTERNAL=Python;3;13;7;64;;cp313-win_amd64;;C:\Users\Oleg\AppData\Local\Programs\Python\Python313\Lib;C:\Users\Oleg\AppData\Local\Programs\Python\Python313\Lib;C:\Users\Oleg\AppData\Local\Programs\Python\Python313\Lib\site-packages;C:\Users\Oleg\AppData\Local\Programs\Python\Python313\Lib\site-packages
 _Python_INTERPRETER_SIGNATURE:INTERNAL=cff1ba2ec5769c1df451c9551674e17e
+//Interpreter reason failure
+_Python_Interpreter_REASON_FAILURE:INTERNAL=
 //Path to a library.
 _Python_LIBRARY_DEBUG:INTERNAL=_Python_LIBRARY_DEBUG-NOTFOUND
-//Path to a library.
 _Python_LIBRARY_RELEASE:INTERNAL=C:/Users/Oleg/AppData/Local/Programs/Python/Python313/libs/python313.lib
 //NumPy reason failure
 _Python_NumPy_REASON_FAILURE:INTERNAL=

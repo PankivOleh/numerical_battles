@@ -9,6 +9,7 @@ using namespace std;
 Player* Game::getPlayer() {
     return player;
 }
+
 int Game::generateN() {
     int n ;
     if(rand() & 1) {
@@ -18,6 +19,7 @@ int Game::generateN() {
     }
     return n;
 }
+
 vector<Numb_card *> Game::generateNumbChoise(int n) {
     vector<Numb_card *> ch;
     for(int i = 0; i < n; i++) {
@@ -26,6 +28,8 @@ vector<Numb_card *> Game::generateNumbChoise(int n) {
     }
     return ch;
 }
+
+
 vector<Operator_card *> Game::generateOperatorChoise(int n) {
     vector<Operator_card *> ch;
     for(int i = 0; i < 5-n; i++) {
@@ -44,6 +48,7 @@ int ismorepreor(char op) {
         default: return 0;
     }
 }
+
 vector<string> Game::createarr(string numbers) {
     stack<char> opstack;
     vector<string> arr;

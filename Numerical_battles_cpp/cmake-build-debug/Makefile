@@ -128,149 +128,149 @@ PyAPI_py/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/build
 .PHONY : PyAPI_py/fast
 
-numerical_battles/Card.obj: numerical_battles/Card.cpp.obj
-.PHONY : numerical_battles/Card.obj
+Card.obj: Card.cpp.obj
+.PHONY : Card.obj
 
 # target to build an object file
-numerical_battles/Card.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.obj
-.PHONY : numerical_battles/Card.cpp.obj
+Card.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Card.cpp.obj
+.PHONY : Card.cpp.obj
 
-numerical_battles/Card.i: numerical_battles/Card.cpp.i
-.PHONY : numerical_battles/Card.i
+Card.i: Card.cpp.i
+.PHONY : Card.i
 
 # target to preprocess a source file
-numerical_battles/Card.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.i
-.PHONY : numerical_battles/Card.cpp.i
+Card.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Card.cpp.i
+.PHONY : Card.cpp.i
 
-numerical_battles/Card.s: numerical_battles/Card.cpp.s
-.PHONY : numerical_battles/Card.s
+Card.s: Card.cpp.s
+.PHONY : Card.s
 
 # target to generate assembly for a file
-numerical_battles/Card.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.s
-.PHONY : numerical_battles/Card.cpp.s
+Card.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Card.cpp.s
+.PHONY : Card.cpp.s
 
-numerical_battles/Enemy.obj: numerical_battles/Enemy.cpp.obj
-.PHONY : numerical_battles/Enemy.obj
+Enemy.obj: Enemy.cpp.obj
+.PHONY : Enemy.obj
 
 # target to build an object file
-numerical_battles/Enemy.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.obj
-.PHONY : numerical_battles/Enemy.cpp.obj
+Enemy.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Enemy.cpp.obj
+.PHONY : Enemy.cpp.obj
 
-numerical_battles/Enemy.i: numerical_battles/Enemy.cpp.i
-.PHONY : numerical_battles/Enemy.i
+Enemy.i: Enemy.cpp.i
+.PHONY : Enemy.i
 
 # target to preprocess a source file
-numerical_battles/Enemy.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.i
-.PHONY : numerical_battles/Enemy.cpp.i
+Enemy.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Enemy.cpp.i
+.PHONY : Enemy.cpp.i
 
-numerical_battles/Enemy.s: numerical_battles/Enemy.cpp.s
-.PHONY : numerical_battles/Enemy.s
+Enemy.s: Enemy.cpp.s
+.PHONY : Enemy.s
 
 # target to generate assembly for a file
-numerical_battles/Enemy.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.s
-.PHONY : numerical_battles/Enemy.cpp.s
+Enemy.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Enemy.cpp.s
+.PHONY : Enemy.cpp.s
 
-numerical_battles/Game.obj: numerical_battles/Game.cpp.obj
-.PHONY : numerical_battles/Game.obj
+Game.obj: Game.cpp.obj
+.PHONY : Game.obj
 
 # target to build an object file
-numerical_battles/Game.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.obj
-.PHONY : numerical_battles/Game.cpp.obj
+Game.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Game.cpp.obj
+.PHONY : Game.cpp.obj
 
-numerical_battles/Game.i: numerical_battles/Game.cpp.i
-.PHONY : numerical_battles/Game.i
+Game.i: Game.cpp.i
+.PHONY : Game.i
 
 # target to preprocess a source file
-numerical_battles/Game.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.i
-.PHONY : numerical_battles/Game.cpp.i
+Game.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Game.cpp.i
+.PHONY : Game.cpp.i
 
-numerical_battles/Game.s: numerical_battles/Game.cpp.s
-.PHONY : numerical_battles/Game.s
+Game.s: Game.cpp.s
+.PHONY : Game.s
 
 # target to generate assembly for a file
-numerical_battles/Game.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.s
-.PHONY : numerical_battles/Game.cpp.s
+Game.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Game.cpp.s
+.PHONY : Game.cpp.s
 
-numerical_battles/Hand.obj: numerical_battles/Hand.cpp.obj
-.PHONY : numerical_battles/Hand.obj
+Hand.obj: Hand.cpp.obj
+.PHONY : Hand.obj
 
 # target to build an object file
-numerical_battles/Hand.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.obj
-.PHONY : numerical_battles/Hand.cpp.obj
+Hand.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Hand.cpp.obj
+.PHONY : Hand.cpp.obj
 
-numerical_battles/Hand.i: numerical_battles/Hand.cpp.i
-.PHONY : numerical_battles/Hand.i
+Hand.i: Hand.cpp.i
+.PHONY : Hand.i
 
 # target to preprocess a source file
-numerical_battles/Hand.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.i
-.PHONY : numerical_battles/Hand.cpp.i
+Hand.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Hand.cpp.i
+.PHONY : Hand.cpp.i
 
-numerical_battles/Hand.s: numerical_battles/Hand.cpp.s
-.PHONY : numerical_battles/Hand.s
+Hand.s: Hand.cpp.s
+.PHONY : Hand.s
 
 # target to generate assembly for a file
-numerical_battles/Hand.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.s
-.PHONY : numerical_battles/Hand.cpp.s
+Hand.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Hand.cpp.s
+.PHONY : Hand.cpp.s
 
-numerical_battles/Player.obj: numerical_battles/Player.cpp.obj
-.PHONY : numerical_battles/Player.obj
+Player.obj: Player.cpp.obj
+.PHONY : Player.obj
 
 # target to build an object file
-numerical_battles/Player.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.obj
-.PHONY : numerical_battles/Player.cpp.obj
+Player.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Player.cpp.obj
+.PHONY : Player.cpp.obj
 
-numerical_battles/Player.i: numerical_battles/Player.cpp.i
-.PHONY : numerical_battles/Player.i
+Player.i: Player.cpp.i
+.PHONY : Player.i
 
 # target to preprocess a source file
-numerical_battles/Player.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.i
-.PHONY : numerical_battles/Player.cpp.i
+Player.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Player.cpp.i
+.PHONY : Player.cpp.i
 
-numerical_battles/Player.s: numerical_battles/Player.cpp.s
-.PHONY : numerical_battles/Player.s
+Player.s: Player.cpp.s
+.PHONY : Player.s
 
 # target to generate assembly for a file
-numerical_battles/Player.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.s
-.PHONY : numerical_battles/Player.cpp.s
+Player.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/Player.cpp.s
+.PHONY : Player.cpp.s
 
-numerical_battles/PyAPI.obj: numerical_battles/PyAPI.cpp.obj
-.PHONY : numerical_battles/PyAPI.obj
+PyAPI.obj: PyAPI.cpp.obj
+.PHONY : PyAPI.obj
 
 # target to build an object file
-numerical_battles/PyAPI.cpp.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.obj
-.PHONY : numerical_battles/PyAPI.cpp.obj
+PyAPI.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/PyAPI.cpp.obj
+.PHONY : PyAPI.cpp.obj
 
-numerical_battles/PyAPI.i: numerical_battles/PyAPI.cpp.i
-.PHONY : numerical_battles/PyAPI.i
+PyAPI.i: PyAPI.cpp.i
+.PHONY : PyAPI.i
 
 # target to preprocess a source file
-numerical_battles/PyAPI.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.i
-.PHONY : numerical_battles/PyAPI.cpp.i
+PyAPI.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/PyAPI.cpp.i
+.PHONY : PyAPI.cpp.i
 
-numerical_battles/PyAPI.s: numerical_battles/PyAPI.cpp.s
-.PHONY : numerical_battles/PyAPI.s
+PyAPI.s: PyAPI.cpp.s
+.PHONY : PyAPI.s
 
 # target to generate assembly for a file
-numerical_battles/PyAPI.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.s
-.PHONY : numerical_battles/PyAPI.cpp.s
+PyAPI.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PyAPI_py.dir\build.make CMakeFiles/PyAPI_py.dir/PyAPI.cpp.s
+.PHONY : PyAPI.cpp.s
 
 # Help Target
 help:
@@ -281,24 +281,24 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... PyAPI_py
-	@echo ... numerical_battles/Card.obj
-	@echo ... numerical_battles/Card.i
-	@echo ... numerical_battles/Card.s
-	@echo ... numerical_battles/Enemy.obj
-	@echo ... numerical_battles/Enemy.i
-	@echo ... numerical_battles/Enemy.s
-	@echo ... numerical_battles/Game.obj
-	@echo ... numerical_battles/Game.i
-	@echo ... numerical_battles/Game.s
-	@echo ... numerical_battles/Hand.obj
-	@echo ... numerical_battles/Hand.i
-	@echo ... numerical_battles/Hand.s
-	@echo ... numerical_battles/Player.obj
-	@echo ... numerical_battles/Player.i
-	@echo ... numerical_battles/Player.s
-	@echo ... numerical_battles/PyAPI.obj
-	@echo ... numerical_battles/PyAPI.i
-	@echo ... numerical_battles/PyAPI.s
+	@echo ... Card.obj
+	@echo ... Card.i
+	@echo ... Card.s
+	@echo ... Enemy.obj
+	@echo ... Enemy.i
+	@echo ... Enemy.s
+	@echo ... Game.obj
+	@echo ... Game.i
+	@echo ... Game.s
+	@echo ... Hand.obj
+	@echo ... Hand.i
+	@echo ... Hand.s
+	@echo ... Player.obj
+	@echo ... Player.i
+	@echo ... Player.s
+	@echo ... PyAPI.obj
+	@echo ... PyAPI.i
+	@echo ... PyAPI.s
 .PHONY : help
 
 

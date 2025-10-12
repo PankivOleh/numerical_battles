@@ -8,12 +8,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/numerical_battles/Card.cpp" "CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.obj" "gcc" "CMakeFiles/PyAPI_py.dir/numerical_battles/Card.cpp.obj.d"
-  "C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/numerical_battles/Enemy.cpp" "CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.obj" "gcc" "CMakeFiles/PyAPI_py.dir/numerical_battles/Enemy.cpp.obj.d"
-  "C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/numerical_battles/Game.cpp" "CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.obj" "gcc" "CMakeFiles/PyAPI_py.dir/numerical_battles/Game.cpp.obj.d"
-  "C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/numerical_battles/Hand.cpp" "CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.obj" "gcc" "CMakeFiles/PyAPI_py.dir/numerical_battles/Hand.cpp.obj.d"
-  "C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/numerical_battles/Player.cpp" "CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.obj" "gcc" "CMakeFiles/PyAPI_py.dir/numerical_battles/Player.cpp.obj.d"
-  "C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/numerical_battles/PyAPI.cpp" "CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.obj" "gcc" "CMakeFiles/PyAPI_py.dir/numerical_battles/PyAPI.cpp.obj.d"
+  "C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/Card.cpp" "CMakeFiles/PyAPI_py.dir/Card.cpp.obj" "gcc" "CMakeFiles/PyAPI_py.dir/Card.cpp.obj.d"
+  "C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/Enemy.cpp" "CMakeFiles/PyAPI_py.dir/Enemy.cpp.obj" "gcc" "CMakeFiles/PyAPI_py.dir/Enemy.cpp.obj.d"
+  "C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/Game.cpp" "CMakeFiles/PyAPI_py.dir/Game.cpp.obj" "gcc" "CMakeFiles/PyAPI_py.dir/Game.cpp.obj.d"
+  "C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/Hand.cpp" "CMakeFiles/PyAPI_py.dir/Hand.cpp.obj" "gcc" "CMakeFiles/PyAPI_py.dir/Hand.cpp.obj.d"
+  "C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/Player.cpp" "CMakeFiles/PyAPI_py.dir/Player.cpp.obj" "gcc" "CMakeFiles/PyAPI_py.dir/Player.cpp.obj.d"
+  "C:/Users/Oleg/Desktop/vs codes/Numerical_Battles/Numerical_battles_cpp/PyAPI.cpp" "CMakeFiles/PyAPI_py.dir/PyAPI.cpp.obj" "gcc" "CMakeFiles/PyAPI_py.dir/PyAPI.cpp.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
