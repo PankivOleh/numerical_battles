@@ -7,7 +7,6 @@
 #include "Enemy.h"
 #include "Player.h"
 
-
 class Player;
 class Game {
     Player* player;
