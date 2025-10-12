@@ -5,6 +5,7 @@
 using namespace std;
 
 
+
 Player::Player(string name, int maxhp, int hp, int level, int difficult ,Hand* hand ) {
         this->name = name ;
         this ->hp = hp ;
@@ -16,6 +17,7 @@ Player::Player(string name, int maxhp, int hp, int level, int difficult ,Hand* h
         }
         this -> hand = hand ;
     }
+
 int Player:: get_hp() {
         return hp ;
     }
@@ -28,6 +30,7 @@ int Player:: get_level() {
 string Player:: get_Name() {
         return name;
     }
+//sfafdfadолтдбб
 int Player::set_hp(int hp) {
         if (this->hp== maxhp&&hp>0) {
             cout << "Player already has max hp" << endl ;
