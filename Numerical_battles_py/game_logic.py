@@ -202,7 +202,7 @@ class GameLogic:
 
         try:
             # +1 бо в С++ функція віднімає 1
-            self.game.merge_cards(numb1_idx + 1, op_idx + 1, numb2_idx + 1)
+            self.game.merge_cards(numb1_idx, op_idx , numb2_idx )
             return True, "Карти об'єднано!"
         except Exception as e:
             return False, f"Помилка об'єднання: {str(e)}"

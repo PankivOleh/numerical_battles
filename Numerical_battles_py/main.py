@@ -1,102 +1,11 @@
 import pygame
 import sys
 from game_logic import GameLogic, GameState
+from settings import *
+from ui_elements import Button, Card, TextInput
 
 # Ініціалізація pygame
 pygame.init()
-
-# Константи
-WIDTH, HEIGHT = 1200, 800
-FPS = 60
-
-# Кольори
-BG_COLOR = (25, 25, 35)
-CARD_BG = (45, 45, 60)
-CARD_HOVER = (65, 65, 85)
-CARD_SELECTED = (85, 120, 180)
-TEXT_COLOR = (240, 240, 250)
-ACCENT_COLOR = (100, 200, 255)
-BUTTON_COLOR = (60, 140, 200)
-BUTTON_HOVER = (80, 160, 220)
-ERROR_COLOR = (220, 80, 80)
-SUCCESS_COLOR = (80, 220, 120)
-
-# Шрифти
-FONT_LARGE = pygame.font.Font(None, 64)
-FONT_MEDIUM = pygame.font.Font(None, 42)
-FONT_SMALL = pygame.font.Font(None, 28)
-FONT_TINY = pygame.font.Font(None, 22)
-
-
-class Button:
-    def __init__(self, x, y, width, height, text, color=BUTTON_COLOR):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.text = text
-        self.color = color
-        self.hover_color = BUTTON_HOVER
-        self.is_hovered = False
-
-    def draw(self, screen):
-        color = self.hover_color if self.is_hovered else self.color
-        pygame.draw.rect(screen, color, self.rect, border_radius=8)
-        pygame.draw.rect(screen, TEXT_COLOR, self.rect, 2, border_radius=8)
-
-        text_surf = FONT_SMALL.render(self.text, True, TEXT_COLOR)
-        text_rect = text_surf.get_rect(center=self.rect.center)
-        screen.blit(text_surf, text_rect)
-
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEMOTION:
-            self.is_hovered = self.rect.collidepoint(event.pos)
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if self.is_hovered:
-                return True
-        return False
-
-
-class Card:
-    def __init__(self, x, y, width, height, value, card_type, index):
-        self.rect = pygame.Rect(x, y, width, height)
-        self.value = value
-        self.card_type = card_type
-        self.index = index
-        self.is_hovered = False
-        self.is_selected = False
-
-    def draw(self, screen):
-        if self.is_selected:
-            color = CARD_SELECTED
-        elif self.is_hovered:
-            color = CARD_HOVER
-        else:
-            color = CARD_BG
-
-        pygame.draw.rect(screen, color, self.rect, border_radius=10)
-        pygame.draw.rect(screen, TEXT_COLOR, self.rect, 2, border_radius=10)
-
-        # Відображення значення
-        if self.card_type == 'special':
-            text = f"SP\n{self.value}"
-            lines = text.split('\n')
-            y_offset = self.rect.centery - 15
-            for line in lines:
-                text_surf = FONT_SMALL.render(line, True, ACCENT_COLOR)
-                text_rect = text_surf.get_rect(center=(self.rect.centerx, y_offset))
-                screen.blit(text_surf, text_rect)
-                y_offset += 25
-        else:
-            font = FONT_MEDIUM if self.card_type == 'numb' else FONT_LARGE
-            text_surf = font.render(str(self.value), True, TEXT_COLOR)
-            text_rect = text_surf.get_rect(center=self.rect.center)
-            screen.blit(text_surf, text_rect)
-
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEMOTION:
-            self.is_hovered = self.rect.collidepoint(event.pos)
-        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-            if self.is_hovered:
-                return True
-        return False
 
 
 class Game:
@@ -106,347 +15,362 @@ class Game:
         self.clock = pygame.time.Clock()
         self.running = True
 
-        self.logic = GameLogic("Player", difficulty=1)
+        # --- МЕНЮ ---
+        self.in_menu = True
+        self.player_name = "Player"
+        self.selected_difficulty = 1
 
-        # UI елементи
+        self.name_input = TextInput(WIDTH // 2 - 150, 300, 300, 50)
+        self.btn_diff_1 = Button(WIDTH // 2 - 200, 420, 120, 50, "EASY")
+        self.btn_diff_2 = Button(WIDTH // 2 - 60, 420, 120, 50, "NORMAL")
+        self.btn_diff_3 = Button(WIDTH // 2 + 80, 420, 120, 50, "HARD")
+        self.btn_diff_1.is_selected = True
+        self.btn_start = Button(WIDTH // 2 - 100, 550, 200, 60, "START GAME", color=SUCCESS_COLOR)
+
+        self.logic = None
+
         self.numb_cards = []
         self.op_cards = []
         self.special_cards = []
         self.choice_cards = []
 
-        self.calculate_button = Button(WIDTH // 2 - 100, 250, 200, 50, "Обчислити")
-        self.clear_button = Button(WIDTH // 2 - 250, 250, 130, 50, "Очистити")
-        self.merge_button = Button(WIDTH // 2 + 130, 250, 130, 50, "Об'єднати")
+        # --- КНОПКИ ГРИ ---
+        btn_y = 350
+        self.calculate_button = Button(WIDTH // 2 - 90, btn_y, 180, 50, "ОБЧИСЛИТИ")
+        self.clear_button = Button(WIDTH // 2 - 240, btn_y, 130, 50, "Очистити")
 
-        self.skip_merge_button = Button(WIDTH // 2 - 100, HEIGHT - 80, 200, 50, "Пропустити")
-        self.confirm_button = Button(WIDTH // 2 - 100, HEIGHT - 80, 200, 50, "Підтвердити")
+        self.confirm_merge_btn = Button(RECT_SPECIAL.centerx - 80, 680, 160, 50, "ПІДТВЕРДИТИ", color=SUCCESS_COLOR)
+        self.skip_merge_btn = Button(RECT_SPECIAL.centerx - 80, 740, 160, 50, "ПРОПУСТИТИ", color=ERROR_COLOR)
+
+        self.confirm_choice_btn = Button(WIDTH // 2 - 100, HEIGHT - 100, 200, 50, "ГОТОВО")
 
         self.message = ""
         self.message_color = TEXT_COLOR
         self.message_timer = 0
 
+    def start_game(self):
+        if self.name_input.text.strip():
+            self.player_name = self.name_input.text.strip()
+        self.logic = GameLogic(self.player_name, self.selected_difficulty)
+        self.in_menu = False
         self.update_cards()
 
     def update_cards(self):
-        """Оновлення карт на екрані"""
+        if not self.logic: return
         numb_data, op_data, special_data = self.logic.get_hand_data()
 
-        # Карти чисел
         self.numb_cards = []
-        card_width, card_height = 80, 100
-        start_x = 50
-        y_pos = HEIGHT - 250
+        self.op_cards = []
+        self.special_cards = []
+
+        # Центрування Чисел
+        card_w, card_h = 70, 90
+        gap = 10
+        total_w = len(numb_data) * (card_w + gap) - gap
+        start_x = RECT_NUMB.centerx - (total_w // 2)
+        y_pos = RECT_NUMB.centery - (card_h // 2)
 
         for i, value in enumerate(numb_data):
-            x = start_x + i * (card_width + 15)
-            card = Card(x, y_pos, card_width, card_height, value, 'numb', i)
+            x = start_x + i * (card_w + gap)
+            if x < RECT_NUMB.left + 10:
+                overlap = (total_w - (RECT_NUMB.width - 20)) / (len(numb_data) - 1) if len(numb_data) > 1 else 0
+                x = RECT_NUMB.left + 10 + i * (card_w + gap - overlap)
+
+            card = Card(x, y_pos, card_w, card_h, value, 'numb', i)
+            if i in self.logic.selected_indices['numb']: card.is_selected = True
             self.numb_cards.append(card)
 
-        # Карти операцій
-        self.op_cards = []
-        y_pos = HEIGHT - 130
+        # Центрування Операцій
+        total_w_op = len(op_data) * (card_w + gap) - gap
+        start_x_op = RECT_OP.centerx - (total_w_op // 2)
+        y_pos_op = RECT_OP.centery - (card_h // 2)
 
         for i, value in enumerate(op_data):
-            x = start_x + i * (card_width + 15)
-            card = Card(x, y_pos, card_width, card_height, value, 'op', i)
+            x = start_x_op + i * (card_w + gap)
+            card = Card(x, y_pos_op, card_w, card_h, value, 'op', i)
+            if i in self.logic.selected_indices['op']: card.is_selected = True
             self.op_cards.append(card)
 
-        # Спеціальні карти
-        self.special_cards = []
-        start_x = WIDTH - 250
-        y_pos = HEIGHT - 250
-
+        # Спецкарти
+        start_y_spec = RECT_SPECIAL.top + 50
         for i, value in enumerate(special_data):
-            x = start_x
-            y = y_pos + i * (card_height + 15)
-            card = Card(x, y, card_width, card_height, value, 'special', i)
+            x = RECT_SPECIAL.centerx - (card_w // 2)
+            y = start_y_spec + i * (card_h + 15)
+            card = Card(x, y, card_w, card_h, value, 'special', i)
             self.special_cards.append(card)
 
     def update_choice_cards(self):
-        """Оновлення карт вибору"""
+        if not self.logic: return
         self.choice_cards = []
         choices = self.logic.get_choice_data()
-
-        card_width, card_height = 80, 100
-        total_width = len(choices) * (card_width + 15)
-        start_x = (WIDTH - total_width) // 2
-        y_pos = HEIGHT // 2
+        card_w, card_h = 100, 140
+        total_w = len(choices) * (card_w + 20)
+        start_x = (WIDTH - total_w) // 2
+        y_pos = HEIGHT // 2 - 50
 
         for i, (card_type, value) in enumerate(choices):
-            x = start_x + i * (card_width + 15)
-            card = Card(x, y_pos, card_width, card_height, value, card_type, i)
+            x = start_x + i * (card_w + 20)
+            card = Card(x, y_pos, card_w, card_h, value, card_type, i)
             if i in self.logic.selected_choice_indices:
                 card.is_selected = True
             self.choice_cards.append(card)
 
+    # --- DRAWING HELPERS ---
+    def draw_background_grid(self):
+        self.screen.fill(BG_COLOR)
+        grid_size = 40
+        for x in range(0, WIDTH, grid_size):
+            pygame.draw.line(self.screen, GRID_COLOR, (x, 0), (x, HEIGHT), 1)
+        for y in range(0, HEIGHT, grid_size):
+            pygame.draw.line(self.screen, GRID_COLOR, (0, y), (WIDTH, y), 1)
+
+    def draw_zones_and_counters(self):
+        def draw_zone(rect, title, count, max_count):
+            pygame.draw.rect(self.screen, ZONE_BG_COLOR, rect, border_radius=15)
+            pygame.draw.rect(self.screen, ZONE_BORDER_COLOR, rect, 2, border_radius=15)
+
+            title_surf = FONT_TINY().render(title, True, (150, 150, 170))
+            self.screen.blit(title_surf, (rect.x + 20, rect.y + 10))
+
+            cnt_color = SUCCESS_COLOR if count < max_count else ERROR_COLOR
+            cnt_surf = FONT_SMALL().render(f"{count}/{max_count}", True, cnt_color)
+            self.screen.blit(cnt_surf, (rect.right - 60, rect.y + 10))
+
+        if self.logic:
+            h = self.logic.player.get_hand()
+            draw_zone(RECT_NUMB, "ЧИСЛА", h.get_numb_count(), 10)
+            draw_zone(RECT_OP, "ОПЕРАЦІЇ", h.get_operator_count(), 6)
+            draw_zone(RECT_SPECIAL, "СПЕЦІАЛЬНІ", h.get_special_count(), 5)
+
     def draw_target(self):
-        """Відображення цільового числа"""
-        target_text = f"Ціль: {self.logic.target_number:.2f}"
-        text_surf = FONT_LARGE.render(target_text, True, ACCENT_COLOR)
-        text_rect = text_surf.get_rect(center=(WIDTH // 2, 80))
-        self.screen.blit(text_surf, text_rect)
+        if not self.logic: return
+        target_panel = pygame.Rect(WIDTH // 2 - 200, 30, 400, 80)
+        pygame.draw.rect(self.screen, ZONE_BG_COLOR, target_panel, border_radius=20)
+        pygame.draw.rect(self.screen, ACCENT_COLOR, target_panel, 2, border_radius=20)
+
+        target_text = f"{self.logic.target_number:.3f}".rstrip('0').rstrip('.')
+
+        lbl = FONT_SMALL().render("ЦІЛЬОВЕ ЧИСЛО", True, (150, 150, 150))
+        self.screen.blit(lbl, lbl.get_rect(center=(WIDTH // 2, 50)))
+
+        text_surf = FONT_LARGE().render(target_text, True, ACCENT_COLOR)
+        self.screen.blit(text_surf, text_surf.get_rect(center=(WIDTH // 2, 85)))
 
     def draw_selected_expression(self):
-        """Відображення вибраного виразу"""
+        if not self.logic: return
         expr = self.logic.build_expression()
         if expr:
-            text_surf = FONT_MEDIUM.render(f"Вираз: {expr}", True, TEXT_COLOR)
-            text_rect = text_surf.get_rect(center=(WIDTH // 2, 180))
-            self.screen.blit(text_surf, text_rect)
+            text_surf = FONT_MEDIUM().render(f"{expr} = ?", True, TEXT_COLOR)
+            bg_rect = text_surf.get_rect(center=(WIDTH // 2, 170))
+            bg_rect.inflate_ip(40, 20)
+            pygame.draw.rect(self.screen, (0, 0, 0, 150), bg_rect, border_radius=10)
+            self.screen.blit(text_surf, text_surf.get_rect(center=(WIDTH // 2, 170)))
 
     def draw_info(self):
-        """Відображення інформації про гравця"""
-        info_texts = [
-            f"HP: {self.logic.player.get_hp()}",
-            f"Рівень: {self.logic.level}/{self.logic.max_level}",
-            f"Складність: {self.logic.difficulty}"
+        if not self.logic: return
+        info_x = 30
+        info_y = 30
+        texts = [
+            (f"{self.logic.player_name}", ACCENT_COLOR),
+            (f"HP: {self.logic.player.get_hp()}", SUCCESS_COLOR),
+            (f"LVL: {self.logic.level}", TEXT_COLOR),
         ]
+        for txt, col in texts:
+            surf = FONT_SMALL().render(txt, True, col)
+            self.screen.blit(surf, (info_x, info_y))
+            info_y += 30
 
-        y_pos = 20
-        for text in info_texts:
-            text_surf = FONT_SMALL.render(text, True, TEXT_COLOR)
-            self.screen.blit(text_surf, (20, y_pos))
-            y_pos += 30
-
-    def draw_message(self):
-        """Відображення повідомлення"""
-        if self.message and self.message_timer > 0:
-            text_surf = FONT_SMALL.render(self.message, True, self.message_color)
-            text_rect = text_surf.get_rect(center=(WIDTH // 2, 320))
-            self.screen.blit(text_surf, text_rect)
-            self.message_timer -= 1
-
-    def show_message(self, text, color=TEXT_COLOR, duration=180):
-        """Показати повідомлення"""
+    def show_message(self, text, color=TEXT_COLOR, duration=120):
         self.message = text
         self.message_color = color
         self.message_timer = duration
 
+    def draw_message(self):
+        if self.message and self.message_timer > 0:
+            text_surf = FONT_MEDIUM().render(self.message, True, self.message_color)
+            bg_rect = text_surf.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
+            bg_rect.inflate_ip(40, 20)
+            pygame.draw.rect(self.screen, (0, 0, 0, 220), bg_rect, border_radius=10)
+            pygame.draw.rect(self.screen, self.message_color, bg_rect, 2, border_radius=10)
+            self.screen.blit(text_surf, text_surf.get_rect(center=bg_rect.center))
+            self.message_timer -= 1
+
+    # --- HANDLERS ---
+    def handle_menu_event(self, event):
+        self.name_input.handle_event(event)
+        if self.btn_diff_1.handle_event(event):
+            self.selected_difficulty = 1
+            self.btn_diff_1.is_selected, self.btn_diff_2.is_selected, self.btn_diff_3.is_selected = True, False, False
+        if self.btn_diff_2.handle_event(event):
+            self.selected_difficulty = 2
+            self.btn_diff_1.is_selected, self.btn_diff_2.is_selected, self.btn_diff_3.is_selected = False, True, False
+        if self.btn_diff_3.handle_event(event):
+            self.selected_difficulty = 3
+            self.btn_diff_1.is_selected, self.btn_diff_2.is_selected, self.btn_diff_3.is_selected = False, False, True
+        if self.btn_start.handle_event(event):
+            self.start_game()
+
     def handle_playing_state(self, event):
-        """Обробка стану гри"""
-        # Обробка карт чисел
-        for card in self.numb_cards:
+        for card in self.numb_cards + self.op_cards:
             if card.handle_event(event):
-                self.logic.select_card('numb', card.index)
+                self.logic.select_card(card.card_type, card.index)
                 self.update_cards()
 
-        # Обробка карт операцій
-        for card in self.op_cards:
-            if card.handle_event(event):
-                self.logic.select_card('op', card.index)
-                self.update_cards()
-
-        # Обробка спеціальних карт
+        spec_used = False
         for card in self.special_cards:
             if card.handle_event(event):
                 if self.logic.use_special_card(card.index):
-                    self.show_message(f"Спеціальна карта використана! Нова ціль: {self.logic.target_number:.2f}",
-                                      SUCCESS_COLOR)
+                    self.show_message("Спец. ефект застосовано!", SUCCESS_COLOR)
                     self.update_cards()
+                    spec_used = True
+                    break
+        if spec_used: return
 
-        # Кнопка обчислення
         if self.calculate_button.handle_event(event):
             success, msg = self.logic.calculate_result()
-            color = SUCCESS_COLOR if success else ERROR_COLOR
-            self.show_message(msg, color)
-
-            if self.logic.state == GameState.GAME_OVER:
-                return
-
-            if success or not success:
-                # Переходимо до фази об'єднання
+            self.show_message(msg, SUCCESS_COLOR if success else ERROR_COLOR)
+            if "Виберіть" not in msg and "Потрібна" not in msg:
                 self.logic.start_merge_phase()
-
+                for c in self.numb_cards + self.op_cards:
+                    c.is_selected = False
+                    c.is_merge_selected = False
             self.update_cards()
 
-        # Кнопка очищення
         if self.clear_button.handle_event(event):
             self.logic.clear_selection()
-            self.show_message("Вибір очищено", TEXT_COLOR, 60)
-
-        # Кнопка об'єднання
-        if self.merge_button.handle_event(event):
-            self.logic.start_merge_phase()
+            self.update_cards()
 
     def handle_merge_state(self, event):
-        """Обробка стану об'єднання"""
-        selected_numb = []
-        selected_op = []
-
-        for card in self.numb_cards:
+        for card in self.numb_cards + self.op_cards:
             if card.handle_event(event):
-                card.is_selected = not card.is_selected
-                if card.is_selected and len(selected_numb) < 2:
-                    selected_numb.append(card.index)
+                card.is_merge_selected = not card.is_merge_selected
 
-        for card in self.op_cards:
-            if card.handle_event(event):
-                card.is_selected = not card.is_selected
-                if card.is_selected and len(selected_op) < 1:
-                    selected_op.append(card.index)
+        if self.confirm_merge_btn.handle_event(event):
+            sel_numb = [c.index for c in self.numb_cards if c.is_merge_selected]
+            sel_op = [c.index for c in self.op_cards if c.is_merge_selected]
 
-        # Рахуємо вибрані карти
-        selected_numb = [c.index for c in self.numb_cards if c.is_selected]
-        selected_op = [c.index for c in self.op_cards if c.is_selected]
-
-        # Кнопка підтвердження об'єднання
-        if self.confirm_button.handle_event(event):
-            if len(selected_numb) == 2 and len(selected_op) == 1:
-                success, msg = self.logic.merge_cards(selected_numb[0], selected_op[0], selected_numb[1])
-                color = SUCCESS_COLOR if success else ERROR_COLOR
-                self.show_message(msg, color)
-
+            if len(sel_numb) == 2 and len(sel_op) == 1:
+                success, msg = self.logic.merge_cards(sel_numb[0], sel_op[0], sel_numb[1])
+                self.show_message(msg, SUCCESS_COLOR if success else ERROR_COLOR)
                 if success:
                     self.update_cards()
                     self.logic.start_card_selection()
                     self.update_choice_cards()
             else:
-                self.show_message("Виберіть 2 числа та 1 операцію!", ERROR_COLOR)
+                self.show_message("Оберіть: [ЧИСЛО] [ОП] [ЧИСЛО]", ERROR_COLOR)
 
-        # Кнопка пропуску
-        if self.skip_merge_button.handle_event(event):
+        if self.skip_merge_btn.handle_event(event):
             self.logic.skip_merge()
             self.update_choice_cards()
 
     def handle_selection_state(self, event):
-        """Обробка стану вибору карт"""
         for card in self.choice_cards:
             if card.handle_event(event):
                 self.logic.select_new_card(card.index)
                 self.update_choice_cards()
 
-        if self.confirm_button.handle_event(event):
+        if self.confirm_choice_btn.handle_event(event):
             if len(self.logic.selected_choice_indices) > 0:
                 self.logic.confirm_card_selection()
-
-                if self.logic.state == GameState.SPECIAL_SELECTION:
-                    self.update_choice_cards()
-                elif self.logic.state == GameState.PLAYING:
+                if self.logic.state == GameState.PLAYING:
                     self.update_cards()
-                    self.show_message(f"Раунд {self.logic.level} починається!", ACCENT_COLOR)
-                elif self.logic.state == GameState.VICTORY:
-                    pass
+                elif self.logic.state == GameState.SPECIAL_SELECTION:
+                    self.update_choice_cards()
             else:
-                self.show_message("Виберіть хоча б одну карту!", ERROR_COLOR)
+                self.show_message("Оберіть хоча б одну карту!", ERROR_COLOR)
+
+    # --- MAIN DRAW LOOPS (Тут був пропущений код) ---
+    def draw_menu(self):
+        title = FONT_TITLE().render("NUMERICAL BATTLES", True, ACCENT_COLOR)
+        self.screen.blit(title, title.get_rect(center=(WIDTH // 2, 150)))
+        lbl_name = FONT_SMALL().render("Введіть ім'я:", True, TEXT_COLOR)
+        self.screen.blit(lbl_name, (WIDTH // 2 - 150, 275))
+        self.name_input.draw(self.screen)
+        lbl_diff = FONT_SMALL().render("Оберіть складність:", True, TEXT_COLOR)
+        self.screen.blit(lbl_diff, (WIDTH // 2 - 150, 395))
+        self.btn_diff_1.draw(self.screen)
+        self.btn_diff_2.draw(self.screen)
+        self.btn_diff_3.draw(self.screen)
+        self.btn_start.draw(self.screen)
 
     def draw_playing_state(self):
-        """Відображення стану гри"""
         self.draw_target()
         self.draw_selected_expression()
         self.draw_info()
-
-        # Карти
-        for card in self.numb_cards:
-            if card.index in self.logic.selected_indices['numb']:
-                card.is_selected = True
-            else:
-                card.is_selected = False
-            card.draw(self.screen)
-
-        for card in self.op_cards:
-            if card.index in self.logic.selected_indices['op']:
-                card.is_selected = True
-            else:
-                card.is_selected = False
-            card.draw(self.screen)
-
-        for card in self.special_cards:
-            card.draw(self.screen)
-
-        # Кнопки
+        self.draw_zones_and_counters()
+        for c in self.numb_cards + self.op_cards + self.special_cards:
+            c.draw(self.screen)
         self.calculate_button.draw(self.screen)
         self.clear_button.draw(self.screen)
-        self.merge_button.draw(self.screen)
-
         self.draw_message()
 
     def draw_merge_state(self):
-        """Відображення стану об'єднання"""
-        title = FONT_LARGE.render("Об'єднання карт", True, ACCENT_COLOR)
-        title_rect = title.get_rect(center=(WIDTH // 2, 80))
-        self.screen.blit(title, title_rect)
+        self.draw_target()
+        self.draw_zones_and_counters()
+        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 180))
+        self.screen.blit(overlay, (0, 0))
+        title = FONT_LARGE().render("РЕЖИМ ЗЛИТТЯ", True, ACCENT_COLOR)
+        self.screen.blit(title, title.get_rect(center=(WIDTH // 2, 200)))
+        hint = FONT_SMALL().render("Виберіть 2 числа та 1 операцію для створення нового числа", True, TEXT_COLOR)
+        self.screen.blit(hint, hint.get_rect(center=(WIDTH // 2, 240)))
 
-        info = FONT_SMALL.render("Виберіть 2 числа та 1 операцію", True, TEXT_COLOR)
-        info_rect = info.get_rect(center=(WIDTH // 2, 150))
-        self.screen.blit(info, info_rect)
+        for c in self.numb_cards + self.op_cards:
+            c.draw(self.screen)
 
-        # Карти
-        for card in self.numb_cards:
-            card.draw(self.screen)
-
-        for card in self.op_cards:
-            card.draw(self.screen)
-
-        # Кнопки
-        self.confirm_button.draw(self.screen)
-        self.skip_merge_button.draw(self.screen)
-
+        self.confirm_merge_btn.draw(self.screen)
+        self.skip_merge_btn.draw(self.screen)
         self.draw_message()
 
     def draw_selection_state(self):
-        """Відображення стану вибору карт"""
-        if self.logic.state == GameState.CARD_SELECTION:
-            title_text = "Виберіть до 3 карт"
-        else:
-            title_text = "Виберіть 1 спеціальну карту"
+        self.draw_zones_and_counters()
+        for c in self.numb_cards + self.op_cards:
+            c.draw(self.screen)
 
-        title = FONT_LARGE.render(title_text, True, ACCENT_COLOR)
-        title_rect = title.get_rect(center=(WIDTH // 2, 80))
-        self.screen.blit(title, title_rect)
+        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 200))
+        self.screen.blit(overlay, (0, 0))
 
-        # Карти вибору
+        txt = "Оберіть нові карти" if self.logic.state == GameState.CARD_SELECTION else "Оберіть спеціальну карту"
+        title = FONT_LARGE().render(txt, True, ACCENT_COLOR)
+        self.screen.blit(title, title.get_rect(center=(WIDTH // 2, 100)))
+
         for card in self.choice_cards:
             card.draw(self.screen)
 
-        # Кнопка підтвердження
-        self.confirm_button.draw(self.screen)
-
+        self.confirm_choice_btn.draw(self.screen)
         self.draw_message()
 
     def draw_game_over(self):
-        """Відображення екрану програшу"""
-        title = FONT_LARGE.render("Гра закінчена!", True, ERROR_COLOR)
-        title_rect = title.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
-        self.screen.blit(title, title_rect)
-
-        info = FONT_MEDIUM.render(f"Досягнуто рівень: {self.logic.level}", True, TEXT_COLOR)
-        info_rect = info.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 20))
-        self.screen.blit(info, info_rect)
+        self.screen.fill((40, 0, 0))
+        title = FONT_LARGE().render("ГРА ЗАКІНЧЕНА", True, ERROR_COLOR)
+        self.screen.blit(title, title.get_rect(center=(WIDTH // 2, HEIGHT // 2)))
 
     def draw_victory(self):
-        """Відображення екрану перемоги"""
-        title = FONT_LARGE.render("Перемога!", True, SUCCESS_COLOR)
-        title_rect = title.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
-        self.screen.blit(title, title_rect)
-
-        info = FONT_MEDIUM.render(f"Пройдено всі {self.logic.max_level} рівнів!", True, TEXT_COLOR)
-        info_rect = info.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 20))
-        self.screen.blit(info, info_rect)
+        self.screen.fill((0, 40, 0))
+        title = FONT_LARGE().render("ПЕРЕМОГА!", True, SUCCESS_COLOR)
+        self.screen.blit(title, title.get_rect(center=(WIDTH // 2, HEIGHT // 2)))
 
     def run(self):
-        """Головний цикл гри"""
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
 
-                # Обробка подій залежно від стану
-                if self.logic.state == GameState.PLAYING:
+                if self.in_menu:
+                    self.handle_menu_event(event)
+                elif self.logic.state == GameState.PLAYING:
                     self.handle_playing_state(event)
                 elif self.logic.state == GameState.MERGE_CHOICE:
                     self.handle_merge_state(event)
                 elif self.logic.state in [GameState.CARD_SELECTION, GameState.SPECIAL_SELECTION]:
                     self.handle_selection_state(event)
 
-                # Обробка подій для кнопок
-                for button in [self.calculate_button, self.clear_button, self.merge_button,
-                               self.skip_merge_button, self.confirm_button]:
-                    button.handle_event(event)
+            self.draw_background_grid()
 
-            # Відображення
-            self.screen.fill(BG_COLOR)
-
-            if self.logic.state == GameState.PLAYING:
+            if self.in_menu:
+                self.draw_menu()
+            elif self.logic.state == GameState.PLAYING:
                 self.draw_playing_state()
             elif self.logic.state == GameState.MERGE_CHOICE:
                 self.draw_merge_state()
@@ -459,7 +383,6 @@ class Game:
 
             pygame.display.flip()
             self.clock.tick(FPS)
-
         pygame.quit()
         sys.exit()
 
