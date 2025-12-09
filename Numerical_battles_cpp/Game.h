@@ -16,13 +16,13 @@ public:
     Game(Player* player);
     Player* getPlayer();
     int generateN();
-    vector<Card*>* generateChoise();
-    int afterChoise(int n , vector<Card*>* choices);
+    vector<Card*> generateChoise();
+    int afterChoise(int n , vector<Card*> choices);
     vector<Numb_card*> generateNumbChoise(int n);
     vector<Operator_card*> generateOperatorChoise(int n);
     vector<Special_card*> generateSpecialChoise();
     int afterSpecialChoise(int n , vector<Special_card*> choices);
-    int setHand();
+    void setHand();
     void mergeCard(int n1 , int n2 , int n3);
     int get_numb_count();
     int get_operator_count();
@@ -33,6 +33,7 @@ public:
     int checkNumber(double numb1 , double numb2);
     void useSpecial(int n);
     void cleanall();
+    void removeCards(std::vector<int> numb_indices, std::vector<int> op_indices);
 };
 
 #endif //GAME_H

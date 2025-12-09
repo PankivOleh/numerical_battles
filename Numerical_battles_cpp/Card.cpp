@@ -4,7 +4,13 @@
 #include <cstdlib>
 // Функції
 
+static bool random_initialized = false;
+
 char rand_operator() {
+    if(!random_initialized) {
+        srand(time(NULL));
+        random_initialized = true;
+    }
     int rand_num = rand() % 5;
     switch (rand_num) {
         case 0: return '+';

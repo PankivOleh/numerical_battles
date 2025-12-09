@@ -8,7 +8,13 @@ Numb_card Hand:: merge_cards(Numb_card *card1, Operator_card *card2 , Numb_card 
     double numb1 = card1->get_numb() , numb2 = card3->get_numb();
     switch(card2->get_op()) {
         case '+': numb1 = numb1 + numb2;break;
-        case '/': numb2==0? numb1 =0: numb1 /=numb2;;break;
+        case '/':
+    if(numb2 == 0 || fabs(numb2) < 0.0001) {
+        numb1 = 0;
+    } else {
+        numb1 /= numb2;
+    }
+        break;
         case '*': numb1 *= numb2;break;
         case '-': numb1 -= numb2;break;
         case '^': numb1 = pow(numb1,numb2);break;

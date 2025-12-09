@@ -113,50 +113,45 @@ vector<Special_card*>Game::generateSpecialChoise() {
 }
 int Game::afterSpecialChoise(int n, vector<Special_card*> choices) {
     getPlayer()->get_hand()->add_special_card(*choices[n]);
-    for(auto c : choices) {
-        delete c;
-    }
-    choices.clear();
     return 0;
 }
-vector<Card*>* Game::generateChoise() {
+vector<Card*> Game::generateChoise() {
     int n = generateN();
     vector<Operator_card *> ch = generateOperatorChoise(n);
     vector<Numb_card *> numb = generateNumbChoise(n);
-    vector<Card*>* pool = new vector<Card*>;
+    vector<Card*> pool;
     for(int i = 0; i < n; i++) {
-        pool->push_back(numb[i]);
+        pool.push_back(numb[i]);
     }
-    for(;n<5;n++) {
-        pool->push_back(ch[n]);
+
+    for(size_t i = 0; i < ch.size(); i++) {
+        pool.push_back(ch[i]);
     }
+
     return pool;
 }
-int Game::afterChoise(int n  , vector<Card*>* ch) {
-    Card* c = (*ch)[n];
+
+int Game::afterChoise(int n  , vector<Card*> ch) {
+    Card* c = (ch)[n];
     if (Numb_card* nc =  dynamic_cast<Numb_card*>(c)) {
         player->get_hand()->add_numb_card(*nc);
     } else if (Operator_card* oc = dynamic_cast<Operator_card*>(c)) {
         player->get_hand()->add_operator_card(*oc);
     }
-    for(auto it = ch->begin(); it != ch->end(); it++) {
-        delete *it;
-    }
-    ch->clear();
     return 0;
 }
 
 
 Game::Game(Player *player) {
+    srand(time(NULL));
     this->player = player;
 }
-int Game::setHand() {
+
+void Game::setHand() {
     getPlayer()->get_hand()->generate_hand();
 }
+
 void Game::mergeCard(int n1, int n2, int n3) {
-    n1--;
-    n2--;
-    n3--;
     vector<Numb_card*>* v1 = player->get_hand()->get_numb_hand();
     vector<Operator_card*>* v2 = player->get_hand()->get_operator_hand();
     Numb_card* nc1 = (*v1)[n1];
@@ -201,7 +196,6 @@ int Game::checkNumber(double numb1, double numb2) {
     return -1;
 }
 void Game::useSpecial(int n) {
-    n--;
     int numb = this->getPlayer()->get_hand()->get_special_card(n)->get_numb();
     this->enemy->setNumber(numb);
     this->getPlayer()->get_hand()->get_special_card(n)->use_card();
@@ -224,7 +218,13 @@ double Game::calculate(string numbers) {\
             if (*it == "+"){result = numb1 + numb2;}
             else if (*it == "-"){result = numb2 - numb1;}
             else if (*it == "*"){result = numb1 * numb2;}
-            else if (*it == "/"){result = numb2 / numb1;}
+            else if (*it == "/"){
+                if(fabs(numb1) < 0.0001) {
+                    result = 0;
+                } else {
+                    result = numb2 / numb1;
+                }
+            }
             else if(*it == "^") {
                 if(numb2<0&&numb1!=std::floor(numb1)) {
                     result = pow(numb2,floor(numb1));
@@ -240,6 +240,11 @@ double Game::calculate(string numbers) {\
     numbstack.pop();
     return result;
 }
+
+
+
+
+
 void Game::cleanall() {
     if(enemy) {
         delete enemy;
@@ -261,6 +266,29 @@ void Game::cleanall() {
     }
     delete player;
     player = nullptr;
+}
+void Game::removeCards(vector<int> numb_indices, vector<int> op_indices) {
+    // 1. Отримуємо доступ до рук
+    auto numb_hand = player->get_hand()->get_numb_hand();
+    auto op_hand = player->get_hand()->get_operator_hand();
+
+    // 2. Позначаємо карти чисел як використані
+    for (int index : numb_indices) {
+        // Перевірка меж, щоб не крашнулось
+        if (index >= 0 && index < numb_hand->size()) {
+            (*numb_hand)[index]->use_card(); // Ставить is_in_hand = false
+        }
+    }
+
+    // 3. Позначаємо карти операторів як використані
+    for (int index : op_indices) {
+        if (index >= 0 && index < op_hand->size()) {
+            (*op_hand)[index]->use_card(); // Ставить is_in_hand = false
+        }
+    }
+
+    // 4. Фізично видаляємо "мертві" карти з векторів
+    player->get_hand()->check_hand();
 }
 
 

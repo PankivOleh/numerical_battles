@@ -46,7 +46,7 @@ double Enemy::getNumber() {
     return this->number;
 }
 double Enemy::setNumber(int number) {
-    this->number += number;
+    this->number += (double)number;
     return this->number;
 }
 
