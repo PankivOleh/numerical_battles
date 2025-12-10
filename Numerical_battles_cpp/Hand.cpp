@@ -137,6 +137,7 @@ int Hand::add_operator_card(Operator_card &card) {
         return -1;
     }
     Operator_card* temp = new Operator_card(card);
+    temp->set_in_hand();
     Operator_hand.push_back(temp);
     return Operator_hand.size();
 }
@@ -144,7 +145,8 @@ int Hand::add_special_card(Special_card &card) {
     if(Special_hand.size() >= MAX_SPECIAL) {
         return -1;
     }
-    Special_card* temp = new Special_card(card);
+        Special_card* temp = new Special_card(card);
+        temp->set_in_hand();
     Special_hand.push_back(temp);
     return Special_hand.size();
 }

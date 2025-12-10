@@ -15,7 +15,7 @@ private:
     vector<Special_card*> Special_hand;
     const int MAX_NUMB = 10;
     const int MAX_OPERATOR = 6;
-    const int MAX_SPECIAL = 5;
+    const int MAX_SPECIAL = 4;
 
 public:
     static Numb_card merge_cards(Numb_card *card1, Operator_card *card2 , Numb_card *card3);
