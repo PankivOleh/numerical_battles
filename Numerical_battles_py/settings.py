@@ -1,9 +1,21 @@
 import pygame
 
 # --- КОНСТАНТИ ЕКРАНУ ---
+
+CONFIG = {
+    "WIDTH": 1280,
+    "HEIGHT": 720,
+    "FULLSCREEN": True  # За замовчуванням повний екран
+}
 WIDTH, HEIGHT = 1200, 800
 FPS = 60
 
+RESOLUTIONS = [
+    (1280, 720),
+    (1366, 768),
+    (1600, 900),
+    (1920, 1080)
+]
 # --- КОЛЬОРИ ---
 BG_COLOR = (20, 24, 30)
 GRID_COLOR = (30, 35, 45)
@@ -68,3 +80,18 @@ def FONT_LARGE(): return get_font(50)
 def FONT_MEDIUM(): return get_font(32)
 def FONT_SMALL(): return get_font(24)
 def FONT_TINY(): return get_font(18)
+
+def GET_RECT_NUMB():
+    w, h = 850, 170
+    return pygame.Rect((CONFIG["WIDTH"] - w) // 2, CONFIG["HEIGHT"] - 320, w, h)
+
+def GET_RECT_OP():
+    w, h = 850, 140
+    return pygame.Rect((CONFIG["WIDTH"] - w) // 2, CONFIG["HEIGHT"] - 140, w, h)
+
+def GET_RECT_SPECIAL():
+    w, h = 180, 550
+    return pygame.Rect(CONFIG["WIDTH"] - w - 20, 120, w, h)
+
+def GET_RECT_EXPRESSION():
+    return pygame.Rect(0, 180, CONFIG["WIDTH"], 120)

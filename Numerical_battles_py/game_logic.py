@@ -9,6 +9,7 @@ class GameState(Enum):
     SPECIAL_SELECTION = 4
     GAME_OVER = 5
     VICTORY = 6
+    SETTINGS = 7
 
 
 class GameLogic:
@@ -90,6 +91,22 @@ class GameLogic:
 
         return False
 
+    def deselect_new_card(self, index):
+        """Знімає виділення з карти у вікні вибору"""
+        if self.state in [GameState.CARD_SELECTION, GameState.SPECIAL_SELECTION]:
+            if index in self.selected_choice_indices:
+                self.selected_choice_indices.remove(index)
+                return True
+        return False
+
+    def clear_new_selection(self):
+        """Повністю очищає вибір нових карт"""
+        if self.state in [GameState.CARD_SELECTION, GameState.SPECIAL_SELECTION]:
+            self.selected_choice_indices.clear()
+            return True
+        return False
+
+
     def clear_selection(self):
         self.selected_cards = []
         self.selected_indices = {'numb': [], 'op': []}
@@ -141,8 +158,14 @@ class GameLogic:
 
             check = self.game.check_number(result, self.target_number)
 
-            # 1. Видаляємо карти (вони використані незалежно від результату)
-            self.game.remove_cards(self.selected_indices['numb'], self.selected_indices['op'])
+            # --- ВИПРАВЛЕННЯ ТУТ ---
+            # Сортуємо індекси у зворотному порядку (наприклад: [2, 0] замість [0, 2])
+            # Це гарантує, що видалення однієї карти не зсуне індекси інших.
+            sorted_numb = sorted(self.selected_indices['numb'], reverse=True)
+            sorted_op = sorted(self.selected_indices['op'], reverse=True)
+
+            self.game.remove_cards(sorted_numb, sorted_op)
+
             self.clear_selection()
 
             if check == 0 or check == 1:
