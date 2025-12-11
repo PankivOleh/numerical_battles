@@ -176,7 +176,7 @@ class GameLogic:
 
             else:
                 # --- ПРОМАХ (Але хід зараховано) ---
-                self.player.set_hp(self.player.get_hp() - 10)
+                self.player.set_hp(-10)
                 self.round_won = False  # Це важливо: не дасть вибрати спецкарту
 
                 if self.player.get_hp() <= 0:
