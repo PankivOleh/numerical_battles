@@ -1,8 +1,16 @@
 import pygame
 import sys
+import os
+import ctypes
 from game_logic import GameLogic, GameState
 from settings import *
 from ui_elements import Button, Card, TextInput
+
+try:
+    # Це каже Windows: "Я сам розберуся з розмірами, не розтягуй мене"
+    ctypes.windll.user32.SetProcessDPIAware()
+except AttributeError:
+    pass
 
 # Ініціалізація pygame
 pygame.init()
@@ -10,6 +18,16 @@ pygame.init()
 
 class Game:
     def __init__(self):
+        # ... (попередній код) ...
+        self.merge_selection_queue = []
+
+        # --- ЗМІННІ ДЛЯ АНІМАЦІЇ ЛІЧИЛЬНИКА ---
+        self.is_animating_calculation = False
+        self.anim_start_time = 0
+        self.anim_duration = 1500  # Тривалість анімації в мс (1.5 сек)
+        self.anim_current_value = 0.0
+        self.anim_target_value = 0.0
+        self.anim_start_value = 0.0
         self.clock = pygame.time.Clock()
         self.running = True
 
@@ -43,6 +61,72 @@ class Game:
         self.message = ""
         self.message_color = TEXT_COLOR
         self.message_timer = 0
+
+    def apply_video_settings(self):
+        """Розумний повний екран: адаптується під монітор"""
+        # Скидаємо дисплей перед зміною режиму
+        pygame.display.quit()
+        pygame.display.init()
+
+        # Центруємо вікно (для віконного режиму)
+        os.environ['SDL_VIDEO_CENTERED'] = '1'
+
+        if CONFIG["FULLSCREEN"]:
+            # ВАЖЛИВО: (0, 0) означає "використати рідну роздільну здатність монітора"
+            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+
+            # Оновлюємо CONFIG реальними розмірами монітора,
+            # щоб кнопки стали на правильні місця
+            w, h = self.screen.get_size()
+            CONFIG["WIDTH"] = w
+            CONFIG["HEIGHT"] = h
+        else:
+            # Віконний режим: використовуємо вибрані користувачем розміри
+            self.screen = pygame.display.set_mode((CONFIG["WIDTH"], CONFIG["HEIGHT"]))
+
+        pygame.display.set_caption("Numerical Battles")
+
+        # Перераховуємо інтерфейс під нові розміри
+        self.reinit_ui()
+
+    def update_calculation_animation(self):
+        """Оновлює лічильник і перевіряє кінець анімації"""
+        if not self.is_animating_calculation:
+            return
+
+        current_time = pygame.time.get_ticks()
+        elapsed = current_time - self.anim_start_time
+
+        if elapsed < self.anim_duration:
+            # Easing function (плавне сповільнення в кінці)
+            t = elapsed / self.anim_duration
+            t = 1 - pow(1 - t, 3)  # Cubic ease-out
+
+            self.anim_current_value = self.anim_start_value + (self.anim_target_value - self.anim_start_value) * t
+        else:
+            # АНІМАЦІЯ ЗАВЕРШЕНА -> ФІНАЛІЗУЄМО ХІД
+            self.is_animating_calculation = False
+            self.anim_current_value = self.anim_target_value
+
+            # Викликаємо логіку застосування результату
+            success, msg = self.logic.apply_turn_result(self.anim_target_value)
+
+            color = SUCCESS_COLOR if self.logic.round_won else ERROR_COLOR
+            self.show_message(msg, color)
+
+            if success:
+                # Перехід далі (Злиття)
+                self.logic.start_merge_phase()
+                for c in self.numb_cards + self.op_cards:
+                    c.is_selected = False
+                    c.is_merge_selected = False
+                self.merge_selection_queue.clear()
+            else:
+                # Game Over або критична помилка
+                pass  # Стан вже змінився в logic
+
+            # Оновлюємо UI (карти зникають і нові летять на місця)
+            self.sync_cards_with_logic()
 
     def apply_video_settings(self):
         """Створює вікно згідно з CONFIG"""
@@ -288,7 +372,8 @@ class Game:
 
     # ==========================================
     # ВІДОБРАЖЕННЯ (DRAWING)
-    # ==========================================
+    # ==========================================\
+
     def draw_background_grid(self):
         self.screen.fill(BG_COLOR)
         grid_size = 50
@@ -425,17 +510,26 @@ class Game:
             self.reinit_ui()
 
     def handle_playing_state(self, event):
-        if self.btn_back_to_menu_game.handle_event(event):
-            self.in_menu = True
-            self.logic = None
+        # 1. БЛОКУВАННЯ ВВОДУ
+        # Якщо йде анімація підрахунку (лічильник біжить), ігноруємо всі кліки
+        if self.is_animating_calculation:
             return
 
+        # 2. КНОПКА ВИХОДУ В МЕНЮ
+        if self.btn_back_to_menu_game.handle_event(event):
+            self.in_menu = True
+            self.logic = None  # Скидаємо поточну сесію гри
+            return
+
+        # 3. ВИБІР КАРТ (Числа та Операції)
         all_cards = self.numb_cards + self.op_cards
         for card in all_cards:
             if card.handle_event(event):
-                self.logic.select_card(card.card_type, card.index)
-                self.sync_cards_with_logic()
+                # select_card тепер повертає True/False (чи пройшла валідація порядку)
+                if self.logic.select_card(card.card_type, card.index):
+                    self.sync_cards_with_logic()  # Оновлюємо UI (карта летить в центр)
 
+        # 4. ВИКОРИСТАННЯ СПЕЦКАРТ
         spec_used = False
         for card in self.special_cards:
             if card.handle_event(event):
@@ -446,21 +540,29 @@ class Game:
                     break
         if spec_used: return
 
+        # 5. КНОПКА "ОБЧИСЛИТИ"
         if self.calculate_button.handle_event(event):
-            success, msg = self.logic.calculate_result()
-            self.show_message(msg, SUCCESS_COLOR if success else ERROR_COLOR)
+            # ЕТАП А: Прев'ю (Валідація та отримання числа без наслідків)
+            is_valid, data = self.logic.preview_calculation()
 
-            if success:
-                # Перехід на злиття
-                self.logic.start_merge_phase()
-                # Скидання вибору для анімації
-                for c in all_cards: c.is_selected = False; c.is_merge_selected = False
-                self.merge_selection_queue.clear()
+            if is_valid:
+                # ЕТАП Б: Запуск анімації
+                # Ми ще НЕ видаляємо карти і НЕ знімаємо HP. Це зробить update_calculation_animation.
+                self.is_animating_calculation = True
+                self.anim_start_time = pygame.time.get_ticks()
+
+                self.anim_target_value = data  # 'data' тут - це float (результат виразу)
+                self.anim_start_value = 0.0  # Можна починати з 0 або з попереднього числа
+                self.anim_current_value = 0.0
+
             else:
+                # ЕТАП В: Помилка валідації (наприклад, "Ділення на нуль")
+                # 'data' тут - це текст помилки
+                self.show_message(data, ERROR_COLOR)
                 self.logic.clear_selection()
+                self.sync_cards_with_logic()  # Повертаємо карти в руку
 
-            self.sync_cards_with_logic()
-
+        # 6. КНОПКА "СКИНУТИ"
         if self.clear_button.handle_event(event):
             self.logic.clear_selection()
             self.sync_cards_with_logic()
@@ -565,22 +667,49 @@ class Game:
         self.btn_settings_back.draw(self.screen)
 
     def draw_playing_state(self):
+        # Оновлення логіки анімації
+        self.update_calculation_animation()
+
+        # Фізика карт
         for c in self.numb_cards + self.op_cards + self.special_cards:
-            c.update()  # Анімація
+            c.update()
 
         self.draw_target()
         self.draw_info()
         self.draw_zones_and_counters()
 
-        # Сортуємо, щоб вибрані/наведені були зверху
         cards_to_draw = self.numb_cards + self.op_cards + self.special_cards
         cards_to_draw.sort(key=lambda c: (c.is_selected, c.is_hovered))
 
         for c in cards_to_draw: c.draw(self.screen)
 
-        self.calculate_button.draw(self.screen)
-        self.clear_button.draw(self.screen)
-        self.btn_back_to_menu_game.draw(self.screen)
+        # --- МАЛЮВАННЯ ЛІЧИЛЬНИКА ---
+        if self.is_animating_calculation:
+            # Малюємо затемнення
+            overlay = pygame.Surface((CONFIG["WIDTH"], CONFIG["HEIGHT"]), pygame.SRCALPHA)
+            overlay.fill((0, 0, 0, 100))
+            self.screen.blit(overlay, (0, 0))
+
+            # Форматуємо число
+            val_text = f"{self.anim_current_value:.3f}".rstrip('0').rstrip('.')
+
+            # Великий текст по центру
+            font_big = get_font(120)
+            text_surf = font_big.render(val_text, True, ACCENT_COLOR)
+
+            # Тінь тексту
+            shadow_surf = font_big.render(val_text, True, (0, 0, 0))
+            center_x, center_y = CONFIG["WIDTH"] // 2, CONFIG["HEIGHT"] // 2
+
+            self.screen.blit(shadow_surf, shadow_surf.get_rect(center=(center_x + 5, center_y + 5)))
+            self.screen.blit(text_surf, text_surf.get_rect(center=(center_x, center_y)))
+
+        # Кнопки (не малюємо їх поверх лічильника, або робимо неактивними візуально)
+        if not self.is_animating_calculation:
+            self.calculate_button.draw(self.screen)
+            self.clear_button.draw(self.screen)
+            self.btn_back_to_menu_game.draw(self.screen)
+
         self.draw_message()
 
     def draw_merge_state(self):
@@ -705,6 +834,7 @@ class Game:
             self.clock.tick(FPS)
         pygame.quit()
         sys.exit()
+
 
 
 if __name__ == "__main__":

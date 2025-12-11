@@ -121,75 +121,105 @@ class GameLogic:
             expr += str(val)
         return expr
 
-    def calculate_result(self):
+    def preview_calculation(self):
         """
-        Тепер повертає True навіть при промаху (якщо це була валідна спроба),
-        щоб гра могла рухатися далі.
+        Етап 1: Валідація та обчислення.
+        Дозволяє одиночне число, але блокує неповні вирази (напр. '5 +').
         """
-        # --- ВАЛІДАЦІЯ ---
-        if not self.selected_cards: return False, "Виберіть карти!"
+        # 1. Перевірка на порожнечу
+        if not self.selected_cards:
+            return False, "Виберіть карти!"
 
-        if self.selected_cards[0][0] != 'numb' or self.selected_cards[-1][0] != 'numb':
-            self.clear_selection()
-            return False, "Вираз має починатися і закінчуватися числом!"
+        count = len(self.selected_cards)
 
-        for i in range(len(self.selected_cards) - 1):
-            if self.selected_cards[i][0] == 'op' and self.selected_cards[i + 1][0] == 'op':
+        # 2. Логіка кількості карт
+        if count == 1:
+            # Якщо карта одна - це має бути ОБОВ'ЯЗКОВО число
+            if self.selected_cards[0][0] != 'numb':
                 self.clear_selection()
-                return False, "Не можна ставити два оператори підряд!"
+                return False, "Оператор сам по собі не працює!"
+            # Якщо це число - йдемо далі до розрахунку (все ок)
 
-            # Перевірка ділення на нуль
-            ctype, idx, val = self.selected_cards[i]
-            if ctype == 'op' and str(val) == '/':
-                next_val = self.selected_cards[i + 1][2]
-                if abs(float(next_val)) < 0.0001:
+        elif count == 2:
+            # Дві карти завжди невалідні (наприклад "5 +" або "+ 5")
+            self.clear_selection()
+            return False, "Неповний вираз!"
+
+        else:
+            # Для 3+ карт діють стандартні правила
+            # Перевірка початку і кінця (мають бути числа)
+            if self.selected_cards[0][0] != 'numb' or self.selected_cards[-1][0] != 'numb':
+                self.clear_selection()
+                return False, "Вираз має починатися і закінчуватися числом!"
+
+            # Перевірка на два оператори підряд
+            for i in range(len(self.selected_cards) - 1):
+                if self.selected_cards[i][0] == 'op' and self.selected_cards[i + 1][0] == 'op':
                     self.clear_selection()
-                    return False, "Ділення на нуль!"
+                    return False, "Два оператори підряд!"
 
-        expr = self.build_expression()
+                # Перевірка ділення на нуль
+                ctype, idx, val = self.selected_cards[i]
+                if ctype == 'op' and str(val) == '/':
+                    next_val = self.selected_cards[i + 1][2]
+                    if abs(float(next_val)) < 0.0001:
+                        self.clear_selection()
+                        return False, "Ділення на нуль!"
 
         # --- ОБЧИСЛЕННЯ ---
+        expr = self.build_expression()
+
         try:
+            # C++ парсер має нормально обробити рядок типу "5" і повернути 5.0
             result = self.game.calculate(str(expr))
 
             if result == float('inf') or result == float('-inf') or result != result:
                 self.clear_selection()
                 return False, "Math Error!"
 
-            check = self.game.check_number(result, self.target_number)
-
-            # --- ВИПРАВЛЕННЯ ТУТ ---
-            # Сортуємо індекси у зворотному порядку (наприклад: [2, 0] замість [0, 2])
-            # Це гарантує, що видалення однієї карти не зсуне індекси інших.
-            sorted_numb = sorted(self.selected_indices['numb'], reverse=True)
-            sorted_op = sorted(self.selected_indices['op'], reverse=True)
-
-            self.game.remove_cards(sorted_numb, sorted_op)
-
-            self.clear_selection()
-
-            if check == 0 or check == 1:
-                # --- ПЕРЕМОГА В РАУНДІ ---
-                self.round_won = True
-                match_type = "=" if check == 0 else "≈"
-                return True, f"Успіх! {result:.3f} {match_type} {self.target_number:.3f}"
-
-            else:
-                # --- ПРОМАХ (Але хід зараховано) ---
-                self.player.set_hp(-10)
-                self.round_won = False  # Це важливо: не дасть вибрати спецкарту
-
-                if self.player.get_hp() <= 0:
-                    self.state = GameState.GAME_OVER
-                    return False, "Гра закінчена! HP вичерпано."
-
-                # Повертаємо True, бо хід зроблено, але з повідомленням про втрату
-                return True, f"Промах! -10 HP. {result:.3f} != {self.target_number:.3f}"
+            return True, result
 
         except Exception as e:
             print(f"Error: {e}")
             self.clear_selection()
             return False, "Помилка обчислення!"
+
+    def apply_turn_result(self, result_value):
+        """
+        Етап 2: Застосування наслідків після анімації.
+        Видаляє карти, знімає HP, перевіряє перемогу.
+        """
+        check = self.game.check_number(result_value, self.target_number)
+
+        # 1. Видаляємо карти (з кінця)
+        sorted_numb = sorted(self.selected_indices['numb'], reverse=True)
+        sorted_op = sorted(self.selected_indices['op'], reverse=True)
+        self.game.remove_cards(sorted_numb, sorted_op)
+        self.clear_selection()
+
+        msg = ""
+        success_state = False
+
+        if check == 0 or check == 1:
+            # Успіх
+            self.round_won = True
+            match_type = "=" if check == 0 else "≈"
+            msg = f"Успіх! {result_value:.3f} {match_type} {self.target_number:.3f}"
+            success_state = True
+        else:
+            # Промах
+            self.player.set_hp(-10)  # Віднімаємо 10
+            self.round_won = False
+
+            if self.player.get_hp() <= 0:
+                self.state = GameState.GAME_OVER
+                msg = "Гра закінчена! HP вичерпано."
+                return False, msg  # Повертаємо False, щоб не йти на злиття
+
+            msg = f"Промах! -10 HP. {result_value:.3f} != {self.target_number:.3f}"
+            success_state = True  # Повертаємо True, бо хід відбувся, просто невдалий
+
+        return success_state, msg
 
     def merge_cards(self, idx1, op_idx, idx2):
         if self.state != GameState.MERGE_CHOICE: return False, "Помилка стану"
