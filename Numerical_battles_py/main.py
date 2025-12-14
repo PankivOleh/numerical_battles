@@ -6,19 +6,23 @@ from game_logic import GameLogic, GameState
 from settings import *
 from ui_elements import Button, Card, TextInput
 
-try:
-    # Це каже Windows: "Я сам розберуся з розмірами, не розтягуй мене"
-    ctypes.windll.user32.SetProcessDPIAware()
-except AttributeError:
-    pass
-
+os.environ['SDL_VIDEO_CENTERED'] = '1'
 # Ініціалізація pygame
 pygame.init()
 
 
 class Game:
     def __init__(self):
-        # ... (попередній код) ...
+        # Застосовуємо налаштування відео (з settings.py)
+        self.apply_video_settings()
+
+        # Стан меню
+        self.in_menu = True
+        self.settings_menu_active = False
+
+        self.player_name = "Player"
+        self.selected_difficulty = 1
+
         self.merge_selection_queue = []
 
         # --- ЗМІННІ ДЛЯ АНІМАЦІЇ ЛІЧИЛЬНИКА ---
@@ -31,15 +35,7 @@ class Game:
         self.clock = pygame.time.Clock()
         self.running = True
 
-        # Застосовуємо налаштування відео (з settings.py)
-        self.apply_video_settings()
 
-        # Стан меню
-        self.in_menu = True
-        self.settings_menu_active = False
-
-        self.player_name = "Player"
-        self.selected_difficulty = 1
 
         # Ініціалізація UI елементів
         self.reinit_ui()
@@ -63,31 +59,35 @@ class Game:
         self.message_timer = 0
 
     def apply_video_settings(self):
-        """Розумний повний екран: адаптується під монітор"""
-        # Скидаємо дисплей перед зміною режиму
+        """Застосовує налаштування екрану. Виправляє зсув вікна."""
+        # 1. Повністю вбиваємо старе вікно, щоб OS забула його координати
         pygame.display.quit()
         pygame.display.init()
 
-        # Центруємо вікно (для віконного режиму)
+        # 2. Центруємо майбутнє вікно (важливо для віконного режиму)
         os.environ['SDL_VIDEO_CENTERED'] = '1'
 
-        if CONFIG["FULLSCREEN"]:
-            # ВАЖЛИВО: (0, 0) означає "використати рідну роздільну здатність монітора"
-            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        # Беремо бажані розміри з налаштувань
+        w, h = CONFIG["WIDTH"], CONFIG["HEIGHT"]
 
-            # Оновлюємо CONFIG реальними розмірами монітора,
-            # щоб кнопки стали на правильні місця
-            w, h = self.screen.get_size()
-            CONFIG["WIDTH"] = w
-            CONFIG["HEIGHT"] = h
+        if CONFIG["FULLSCREEN"]:
+            # ВАЖЛИВО: Ми створюємо екран саме розміру w/h (наприклад 1280x720),
+            # але додаємо прапорець SCALED. Pygame сам розтягне ці 1280 пікселів
+            # на весь ваш монітор (1920x1080), зберігаючи пропорції та чіткість UI.
+            try:
+                self.screen = pygame.display.set_mode((w, h), pygame.FULLSCREEN | pygame.SCALED)
+            except pygame.error:
+                # Якщо SCALED не працює (старе залізо), робимо звичайний фулскрін
+                self.screen = pygame.display.set_mode((w, h), pygame.FULLSCREEN)
         else:
-            # Віконний режим: використовуємо вибрані користувачем розміри
-            self.screen = pygame.display.set_mode((CONFIG["WIDTH"], CONFIG["HEIGHT"]))
+            # Віконний режим - просто вікно заданого розміру по центру
+            self.screen = pygame.display.set_mode((w, h))
 
         pygame.display.set_caption("Numerical Battles")
 
-        # Перераховуємо інтерфейс під нові розміри
-        self.reinit_ui()
+        # 3. Перераховуємо координати кнопок під нові w/h
+        if hasattr(self, 'btn_start'):
+            self.reinit_ui()
 
     def update_calculation_animation(self):
         """Оновлює лічильник і перевіряє кінець анімації"""
@@ -179,13 +179,17 @@ class Game:
         self.btn_clear_choices = Button(center_x + 120, h - 100, 150, 50, "Відмінити", color=ERROR_COLOR)
 
     def start_game(self):
-        """Запуск нової гри"""
         if self.name_input.text.strip():
             self.player_name = self.name_input.text.strip()
+
         self.logic = GameLogic(self.player_name, self.selected_difficulty)
         self.in_menu = False
+
+        # Спочатку синхронізуємо карти (це створить об'єкти)
         self.sync_cards_with_logic()
 
+        # А перевірку на deadlock тут НЕ викликаємо вручну,
+        # вона сама спрацює в першому кадрі handle_playing_state
     # ==========================================
     # ЛОГІКА СИНХРОНІЗАЦІЇ UI ТА C++
     # ==========================================
@@ -352,22 +356,49 @@ class Game:
         card.target_pos = pygame.Vector2(target_x, target_y)
 
     def update_choice_cards(self):
-        """Оновлення карток для драфту"""
+        """Оновлення карток для драфту (СІТКА 2x5)"""
         if not self.logic: return
+
         self.choice_cards = []
-        choices = self.logic.get_choice_data()
+        choices = self.logic.get_choice_data()  # Тут має бути 10 елементів
+
+        # Налаштування розмірів
         card_w, card_h = 100, 140
-        total_w = len(choices) * (card_w + 20)
+        gap_x = 25
+        gap_y = 30
+
+        # Скільки карт в одному ряду
+        cards_per_row = 5
+
+        # Розрахунок ширини блоку (щоб центрувати)
+        # Ширина 5 карт + 4 проміжки
+        total_row_w = (cards_per_row * card_w) + ((cards_per_row - 1) * gap_x)
 
         w, h = CONFIG["WIDTH"], CONFIG["HEIGHT"]
-        start_x = (w - total_w) // 2
-        y_pos = h // 2 - 50
+
+        # Початкова точка X (центр екрану мінус половина ширини блоку)
+        start_x = (w - total_row_w) // 2
+
+        # Початкова точка Y (трохи вище центру, бо у нас 2 ряди)
+        start_y = (h // 2) - card_h - (gap_y // 2)
 
         for i, (card_type, value) in enumerate(choices):
-            x = start_x + i * (card_w + 20)
-            card = Card(x, y_pos, card_w, card_h, value, card_type, i)
+            # Математика сітки:
+            row = i // cards_per_row  # 0 для перших 5, 1 для наступних
+            col = i % cards_per_row  # 0, 1, 2, 3, 4
+
+            # Координати карти
+            x = start_x + (col * (card_w + gap_x))
+            y = start_y + (row * (card_h + gap_y))
+
+            # Створення карти
+            # Передаємо index=i, щоб логіка знала, яку саме карту ми вибрали
+            card = Card(x, y, card_w, card_h, value, card_type, i)
+
+            # Відновлюємо стан вибору (зелена рамка)
             if i in self.logic.selected_choice_indices:
                 card.is_selected = True
+
             self.choice_cards.append(card)
 
     # ==========================================
@@ -510,6 +541,25 @@ class Game:
             self.reinit_ui()
 
     def handle_playing_state(self, event):
+
+        if self.logic.state != GameState.PLAYING:
+            return
+
+        if not self.is_animating_calculation:
+            is_deadlock, msg = self.logic.check_deadlock()
+            if is_deadlock:
+                # Якщо глухий кут виявлено:
+                color = ERROR_COLOR
+                if self.logic.state == GameState.GAME_OVER:
+                    # Якщо вмерли від штрафу
+                    pass
+                else:
+                    # Якщо просто перейшли до вибору карт
+                    self.update_choice_cards()  # Оновити UI вибору
+
+                self.show_message(msg, color, duration=180)
+                return  # Виходимо, бо стан змінився
+
         # 1. БЛОКУВАННЯ ВВОДУ
         # Якщо йде анімація підрахунку (лічильник біжить), ігноруємо всі кліки
         if self.is_animating_calculation:
@@ -604,32 +654,41 @@ class Game:
             self.update_choice_cards()
 
     def handle_selection_state(self, event):
+        # 1. Кнопка "В меню"
         if self.btn_back_to_menu_game.handle_event(event):
             self.in_menu = True
             self.logic = None
             return
 
+        # 2. Обробка кліків по картах (вибір/зняття вибору)
         for card in self.choice_cards:
             if card.handle_event(event):
                 if card.is_selected:
-                    self.logic.deselect_new_card(card.index)  # Потрібен метод в GameLogic!
+                    self.logic.deselect_new_card(card.index)
                 else:
                     self.logic.select_new_card(card.index)
                 self.update_choice_cards()
 
+        # 3. Кнопка "Відмінити" (Очистити вибір)
         if self.btn_clear_choices.handle_event(event):
-            self.logic.clear_new_selection()  # Потрібен метод в GameLogic!
+            self.logic.clear_new_selection()
             self.update_choice_cards()
 
+        # 4. Кнопка "ГОТОВО" (Підтвердити вибір)
         if self.confirm_choice_btn.handle_event(event):
+            # Перевіряємо, чи вибрано хоча б одну карту
             if len(self.logic.selected_choice_indices) > 0:
+                # Викликаємо логіку (вона сама розбереться: це перемога чи дедлок)
                 self.logic.confirm_card_selection()
+
+                # Оновлюємо екран залежно від того, куди нас перекинула логіка
                 if self.logic.state == GameState.PLAYING:
-                    self.sync_cards_with_logic()
+                    self.sync_cards_with_logic()  # Повертаємось у гру
                 elif self.logic.state == GameState.SPECIAL_SELECTION:
-                    self.update_choice_cards()
+                    self.update_choice_cards()  # Переходимо до вибору спецкарт
             else:
-                self.show_message("Оберіть хоча б одну карту!", ERROR_COLOR)
+                # Якщо гравець нічого не вибрав і натиснув ГОТОВО
+                self.show_message("Оберіть хоча б одну!", ERROR_COLOR)
 
     # ==========================================
     # РИСУВАННЯ (DRAW LOOPS)
@@ -756,8 +815,19 @@ class Game:
         overlay.fill((0, 0, 0, 220))
         self.screen.blit(overlay, (0, 0))
 
-        txt = "Оберіть нові карти" if self.logic.state == GameState.CARD_SELECTION else "Оберіть спеціальну карту"
-        title = FONT_LARGE().render(txt, True, ACCENT_COLOR)
+        # --- ОНОВЛЕНИЙ ТЕКСТ ---
+        if self.logic.state == GameState.CARD_SELECTION:
+            current = len(self.logic.selected_choice_indices)
+            limit = self.logic.selection_limit
+            # Показуємо "Обрано: 2 / 6"
+            txt = f"Оберіть карти: {current} / {limit}"
+            col = TEXT_COLOR
+            if current == limit: col = ERROR_COLOR  # Червоний, якщо ліміт
+        else:
+            txt = "Оберіть спеціальну карту"
+            col = (200, 100, 255)
+
+        title = FONT_LARGE().render(txt, True, col)
         self.screen.blit(title, title.get_rect(center=(w // 2, 100)))
 
         for card in self.choice_cards:

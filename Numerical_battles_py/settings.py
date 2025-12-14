@@ -2,8 +2,8 @@ import pygame
 
 # --- КОНФІГУРАЦІЯ ---
 CONFIG = {
-    "WIDTH": 1280,
-    "HEIGHT": 720,
+    "WIDTH": 1600,
+    "HEIGHT": 900,
     "FULLSCREEN": True
 }
 
