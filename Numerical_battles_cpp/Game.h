@@ -16,6 +16,7 @@ public:
     Game(Player* player);
     Player* getPlayer();
     int generateN();
+    double generateFairTarget();
     vector<Card*> generateChoise();
     int afterChoise(int n , vector<Card*> choices);
     vector<Numb_card*> generateNumbChoise(int n);

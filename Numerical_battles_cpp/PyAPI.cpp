@@ -60,7 +60,7 @@ PYBIND11_MODULE(PyAPI_py, m) {
 
     // --- 4. ВОРОГ (Enemy) ---
     py::class_<Enemy>(m, "Enemy")
-        .def(py::init<int, int>())
+        .def(py::init<double>())
         .def("get_number", &Enemy::getNumber)
         .def("set_number", &Enemy::setNumber);
 

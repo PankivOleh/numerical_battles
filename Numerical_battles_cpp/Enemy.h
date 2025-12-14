@@ -8,9 +8,9 @@
 class Enemy {
     double number;
 public:
-    Enemy(int level , int difficult);
+    Enemy(double n);
     double getNumber();
-    double setNumber(int number);
+    double setNumber(double number);
 };
 
 #endif //ENEMY_H

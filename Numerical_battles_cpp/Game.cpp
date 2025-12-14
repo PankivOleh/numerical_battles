@@ -2,10 +2,160 @@
 #include <stack>
 #include "Game.h"
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
 // методи не призначені для пайтону
+
+
+
+double Game::generateFairTarget() {
+    // 1. ПІДГОТОВКА (Отримуємо доступні карти)
+    vector<double> base_numbers;
+    vector<char> base_ops;
+
+    auto num_hand = player->get_hand()->get_numb_hand();
+    for (auto c : *num_hand) {
+        if (c->is_in_hand()) base_numbers.push_back(c->get_numb());
+    }
+
+    auto op_hand = player->get_hand()->get_operator_hand();
+    for (auto c : *op_hand) {
+        if (c->is_in_hand()) base_ops.push_back(c->get_op());
+    }
+
+    // Захист на випадок порожньої руки
+    if (base_numbers.size() < 2 || base_ops.empty()) {
+        if (!base_numbers.empty()) return base_numbers[0];
+        return 10.0;
+    }
+
+    int difficulty = player->get_difficult();
+
+    // =============================================================
+    // ЦИКЛ СПРОБ (RETRY LOOP)
+    // Ми будемо пробувати генерувати приклад, доки не вийде "чистий"
+    // =============================================================
+    for (int attempt = 0; attempt < 50; attempt++) {
+
+        // Робимо копії для цієї спроби
+        vector<double> pool_nums = base_numbers;
+        vector<char> pool_ops = base_ops;
+
+        // Визначаємо кількість операторів
+        int max_ops = std::min((int)pool_nums.size() - 1, (int)pool_ops.size());
+        int ops_count = 1;
+
+        if (difficulty == 1) ops_count = 1;
+        else if (difficulty == 2) ops_count = 1 + (rand() % 2);
+        else ops_count = 2 + (rand() % 3); // Hard: 2-4 оператори
+
+        if (ops_count > max_ops) ops_count = max_ops;
+        if (ops_count < 1) ops_count = 1;
+
+        // --- БУДУЄМО ЛАНЦЮЖОК (Select) ---
+        vector<double> sel_nums;
+        vector<char> sel_ops;
+
+        // Перше число
+        int idx = rand() % pool_nums.size();
+        sel_nums.push_back(pool_nums[idx]);
+        pool_nums.erase(pool_nums.begin() + idx);
+
+        for (int i = 0; i < ops_count; i++) {
+            // Оператор
+            int opIdx = rand() % pool_ops.size();
+            sel_ops.push_back(pool_ops[opIdx]);
+            pool_ops.erase(pool_ops.begin() + opIdx);
+
+            // Наступне число
+            int nIdx = rand() % pool_nums.size();
+            sel_nums.push_back(pool_nums[nIdx]);
+            pool_nums.erase(pool_nums.begin() + nIdx);
+        }
+
+        // --- РАХУЄМО (Calculate with Priority) ---
+        // Якщо стається помилка -> valid = false
+        bool valid = true;
+
+        // 1. Високий пріоритет (^, *, /)
+        for (size_t i = 0; i < sel_ops.size(); ) {
+            char op = sel_ops[i];
+            if (op == '*' || op == '/' || op == '^') {
+                double v1 = sel_nums[i];
+                double v2 = sel_nums[i+1];
+                double res = 0;
+
+                if (op == '*') {
+                    res = v1 * v2;
+                } else if (op == '/') {
+                    if (std::abs(v2) < 0.001) { valid = false; break; } // Ділення на 0
+                    res = v1 / v2;
+                } else if (op == '^') {
+                    // Жорстка перевірка на адекватність степеня
+                    if (std::abs(v1) > 10 || std::abs(v2) > 6) { valid = false; break; }
+                    // Перевірка на комплексні числа (корінь з від'ємного)
+                    if (v1 < 0 && std::abs(v2) < 1 && v2 != 0) { valid = false; break; }
+
+                    res = pow(v1, v2);
+                }
+
+                // Перевірка результату на переповнення
+                if (std::isinf(res) || std::isnan(res) || std::abs(res) > 2000000) {
+                    valid = false; break;
+                }
+
+                sel_nums[i] = res;
+                sel_nums.erase(sel_nums.begin() + i + 1);
+                sel_ops.erase(sel_ops.begin() + i);
+            } else {
+                i++;
+            }
+        }
+        if (!valid) continue; // Ця спроба провалилась, пробуємо іншу комбінацію
+
+        // 2. Низький пріоритет (+, -)
+        double result = sel_nums[0];
+        for (size_t i = 0; i < sel_ops.size(); i++) {
+            char op = sel_ops[i];
+            double v2 = sel_nums[i+1];
+            if (op == '+') result += v2;
+            else if (op == '-') result -= v2;
+        }
+
+        // Фінальна перевірка адекватності
+        if (std::isinf(result) || std::isnan(result)) continue;
+
+        // Округлення
+        if (std::abs(result - std::round(result)) < 0.0001) {
+            result = std::round(result);
+        }
+
+        // --- ANTI-CHEESE (Чи число вже є в руці?) ---
+        // Якщо це не Easy, ми не хочемо давати відповідь, яка вже готова
+        if (difficulty > 1) {
+            bool exists = false;
+            // Перевіряємо початковий пул
+            for (double num : base_numbers) {
+                if (std::abs(num - result) < 0.001) {
+                    exists = true;
+                    break;
+                }
+            }
+            // Якщо число вже є в руці - це занадто просто, пробуємо інший приклад
+            if (exists) continue;
+        }
+
+        // Якщо ми дійшли сюди - число ідеальне!
+        return result;
+    }
+
+    // Якщо за 50 спроб не вдалося (дуже рідко), повертаємо просту суму перших двох
+    if (base_numbers.size() >= 2) return base_numbers[0] + base_numbers[1];
+    return base_numbers[0];
+}
+
 Player* Game::getPlayer() {
     return player;
 }
@@ -13,9 +163,9 @@ Player* Game::getPlayer() {
 int Game::generateN() {
     int n ;
     if(rand() & 1) {
-        n = 3;
+        n = 6;
     }else {
-        n = 2;
+        n = 4;
     }
     return n;
 }
@@ -28,11 +178,25 @@ vector<Numb_card *> Game::generateNumbChoise(int n) {
     }
     return ch;
 }
+Enemy* Game::createEnemy() {
+    // 1. Спочатку генеруємо "Чесну Ціль" (Fair Target)
+    double fairTarget = this->generateFairTarget();
+
+    // 2. Створюємо ворога вже з цим числом
+    // (Старий ворог видаляється в cleanall або тут, якщо треба)
+    if (this->enemy != nullptr) {
+        delete this->enemy;
+    }
+
+    this->enemy = new Enemy(fairTarget);
+
+    return this->enemy;
+}
 
 
 vector<Operator_card *> Game::generateOperatorChoise(int n) {
     vector<Operator_card *> ch;
-    for(int i = 0; i < 5-n; i++) {
+    for(int i = 0; i < 10-n; i++) {
         Operator_card *c = new Operator_card();
         ch.push_back(c->generate_card());
     }
@@ -145,6 +309,7 @@ int Game::afterChoise(int n  , vector<Card*> ch) {
 Game::Game(Player *player) {
     srand(time(NULL));
     this->player = player;
+    this->enemy = nullptr;
 }
 
 void Game::setHand() {
@@ -170,34 +335,38 @@ int Game::get_operator_count() {
 int Game::get_special_count() {
     return player->get_hand()->get_special_count();
 }
-Enemy* Game::createEnemy() {
-    this->enemy = new Enemy(this->getPlayer()->get_level() , this->getPlayer()->get_difficult());
-    return this->enemy;
-}
+
 
 int Game::checkNumber(double numb1, double numb2) {
     double difficult = this->getPlayer()->get_difficult();
     double dif = abs(numb1 - numb2);
-    if(numb2 >= 1||numb2 <=-1) {
-        if(dif == 0 ) {
-            return 0;
-        }
-        if(dif < 6 - difficult) {
-            return 1;
-        }
-    }else {
-        if(dif<0.01) {
-            return 0;
-        }
-        if(dif<(0.06 - difficult/100)) {
-            return 1;
-        }
+
+    // Визначаємо допустиму похибку залежно від складності
+    double tolerance = 0.0;
+
+    if (difficult == 1) {
+        tolerance = 2.5; // Easy: можна помилитися на ±2.5
+    } else if (difficult == 2) {
+        tolerance = 1.0; // Normal: похибка ±1
+    } else {
+        tolerance = 0.1; // Hard: майже ідеально
     }
-    return -1;
+
+    // Перевірка
+    if (dif <= 0.001) {
+        return 0; // Ідеально (JACKPOT!)
+    }
+
+    if (dif <= tolerance) {
+        return 1; // Зараховано (Достатньо близько)
+    }
+
+    return -1; // Промах
 }
+
 void Game::useSpecial(int n) {
     int numb = this->getPlayer()->get_hand()->get_special_card(n)->get_numb();
-    this->enemy->setNumber(numb);
+    this->enemy->setNumber((double)numb);
     this->getPlayer()->get_hand()->get_special_card(n)->use_card();
     this->player->get_hand()->check_hand();
 }
