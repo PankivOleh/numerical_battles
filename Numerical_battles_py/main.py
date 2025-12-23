@@ -123,9 +123,15 @@ class Game:
             self.is_animating_calculation = False
             self.anim_current_value = self.anim_target_value
 
-            # Застосовуємо результат (видаляємо карти, перевіряємо перемогу)
-            # self.logic.round_won стає True, якщо влучили в ціль
+            # 1. Застосовуємо результат (тут може знятися HP)
             success, msg = self.logic.apply_turn_result(self.anim_target_value)
+
+            # === КРИТИЧНА ПЕРЕВІРКА: ЧИ МИ ЖИВІ? ===
+            if self.logic.player.get_hp() <= 0:
+                self.logic.state = GameState.GAME_OVER
+                self.show_message("ГРА ЗАКІНЧЕНА", ERROR_COLOR, duration=200)
+                return  # <--- ВАЖЛИВО: Миттєвий вихід, ніяких switch_turn!
+            # ========================================
 
             color = ERROR_COLOR
             if success: color = SUCCESS_COLOR
@@ -136,22 +142,22 @@ class Game:
             is_bot_turn = (self.game_mode == "EvE") or (self.game_mode == "PvE" and self.current_turn == 2)
 
             if success:
-                # Хід успішний (карти видалені).
-                # НЕЗАЛЕЖНО від перемоги, йдемо по ланцюжку відновлення карт.
-
-                if is_bot_turn:
-                    # Бот пропускає злиття -> Драфт
-                    self.logic.start_card_selection()
+                # Хід успішний
+                if self.logic.round_won:
+                    # ПЕРЕМОГА -> Вибір нагороди
+                    self.logic.start_special_selection()
                 else:
-                    # Людина йде на злиття -> Потім Драфт
-                    self.logic.start_merge_phase()
+                    # ПРОМІЖНИЙ ХІД
+                    if is_bot_turn:
+                        self.logic.start_card_selection()
+                    else:
+                        self.logic.start_merge_phase()
 
                 self.merge_selection_queue.clear()
                 self.logic.clear_selection()
-                # Очищаємо список візуальних карт, щоб оновити їх у наступній фазі
                 self.choice_cards.clear()
             else:
-                # Помилка/Штраф -> Перехід ходу
+                # ПОМИЛКА -> Перехід ходу (Тільки якщо ми ще живі, перевірка вище це гарантує)
                 self.switch_turn()
 
             self.sync_cards_with_logic()
