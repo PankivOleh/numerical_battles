@@ -50,6 +50,39 @@ class GameLogic:
         self.max_regular_choices = 3
         self.max_special_choices = 1
 
+    def make_ai_turn(self):
+        """
+        Автоматичний хід бота. Повертає True, якщо хід зроблено.
+        """
+        # 1. Отримуємо дані для C++
+        numb_data, op_data, _ = self.get_hand_data()
+
+        # 2. Питаємо C++, що робити
+        # move = [idx_n1, idx_op, idx_n2]
+        try:
+            move = api.AI.find_best_move(numb_data, op_data, self.target_number)
+        except Exception as e:
+            print(f"AI Error: {e}")
+            return False
+
+        idx_n1, idx_op, idx_n2 = move[0], move[1], move[2]
+
+        # 3. Виконуємо хід, якщо він валідний
+        if idx_n1 != -1:
+            print(f"[AI] Bot decided: {numb_data[idx_n1]} {op_data[idx_op]} {numb_data[idx_n2]}")
+            self.clear_selection()
+
+            # Послідовність важлива!
+            self.select_card('numb', idx_n1)
+            self.select_card('op', idx_op)
+            self.select_card('numb', idx_n2)
+
+            return True
+        else:
+            print("[AI] I give up! Skipping turn...")
+            return False
+
+
     def start_card_selection(self):
         self.state = GameState.CARD_SELECTION
 
@@ -296,33 +329,42 @@ class GameLogic:
         """
         Підтверджує вибір карт і перемикає стан.
         """
-        print(f"Confirming selection. State: {self.state}, Deadlock: {self.is_deadlock_recovery}")
-
         if self.state == GameState.CARD_SELECTION:
             # 1. Додаємо вибрані карти в руку
             for idx in self.selected_choice_indices:
                 self.game.after_choise(idx, self.available_choices)
 
-            # 2. Вирішуємо, куди йти далі
+            # 2. Логіка переходів
             if self.is_deadlock_recovery:
-                # Якщо це був порятунок від дедлоку -> повертаємось у гру
-                print("Recovering from deadlock...")
-                self.regenerate_target()  # Оновлюємо ціль під нові карти
+                # Якщо рятувалися від глухого кута -> повертаємося в гру
                 self.state = GameState.PLAYING
-                self.is_deadlock_recovery = False  # Скидаємо прапорець
+                self.is_deadlock_recovery = False
                 self.round_won = False
+                # При дедлоку ціль можна не міняти, або змінити - на твій розсуд.
+                # Якщо хочеш міняти і тут - розкоментуй рядок нижче:
+                # self.regenerate_target()
 
             elif self.round_won:
-                # Якщо виграли раунд -> даємо спецкарту
+                # Перемога -> йдемо за нагородою
                 self.start_special_selection()
+
             else:
-                # Якщо просто пропустили злиття -> наступний рівень
-                self.next_round()
+                # === ПРОМАХ (Гра продовжується на цьому ж рівні) ===
+                self.state = GameState.PLAYING
+                self.round_won = False
+
+                # === ГОЛОВНА ЗМІНА ===
+                # Генеруємо нову ціль, щоб гравцю не було нудно з тим самим числом
+                self.regenerate_target()
 
         elif self.state == GameState.SPECIAL_SELECTION:
+            # Вибір спецкарти (нагорода за перемогу)
             for idx in self.selected_choice_indices:
                 self.game.after_special_choise(idx, self.available_choices)
+
+            # Переходимо на наступний рівень
             self.next_round()
+
 
     def start_special_selection(self):
         self.state = GameState.SPECIAL_SELECTION

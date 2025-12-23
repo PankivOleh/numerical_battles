@@ -22,6 +22,17 @@ class Game:
 
         self.player_name = "Player"
         self.selected_difficulty = 1
+        # --- НОВІ ЗМІННІ ДЛЯ РЕЖИМІВ ---
+        self.game_mode = "PvE"  # Варіанти: "PvE", "PvP", "EvE"
+        self.current_turn = 1  # 1 або 2
+
+        # Таймер для штучного інтелекту (щоб він не ходив миттєво)
+        self.ai_timer = 0
+        self.ai_delay = 60  # 60 кадрів = 1 секунда затримки
+
+        # Логіка для двох гравців
+        self.logic_p1 = None
+        self.logic_p2 = None
 
         self.merge_selection_queue = []
 
@@ -34,6 +45,14 @@ class Game:
         self.anim_start_value = 0.0
         self.clock = pygame.time.Clock()
         self.running = True
+
+        self.game_mode = "PvE"  # Або "PvP", "EvE"
+        self.logic_p1 = None
+        self.logic_p2 = None
+        self.current_turn = 1  # 1 або 2
+
+        self.ai_delay_timer = 0
+        self.ai_phase = 0
 
 
 
@@ -90,42 +109,51 @@ class Game:
             self.reinit_ui()
 
     def update_calculation_animation(self):
-        """Оновлює лічильник і перевіряє кінець анімації"""
-        if not self.is_animating_calculation:
-            return
+        if not self.is_animating_calculation: return
 
         current_time = pygame.time.get_ticks()
         elapsed = current_time - self.anim_start_time
 
         if elapsed < self.anim_duration:
-            # Easing function (плавне сповільнення в кінці)
             t = elapsed / self.anim_duration
-            t = 1 - pow(1 - t, 3)  # Cubic ease-out
-
+            t = 1 - pow(1 - t, 3)
             self.anim_current_value = self.anim_start_value + (self.anim_target_value - self.anim_start_value) * t
         else:
-            # АНІМАЦІЯ ЗАВЕРШЕНА -> ФІНАЛІЗУЄМО ХІД
+            # === АНІМАЦІЯ ЗАВЕРШЕНА ===
             self.is_animating_calculation = False
             self.anim_current_value = self.anim_target_value
 
-            # Викликаємо логіку застосування результату
+            # Застосовуємо результат (видаляємо карти, перевіряємо перемогу)
+            # self.logic.round_won стає True, якщо влучили в ціль
             success, msg = self.logic.apply_turn_result(self.anim_target_value)
 
-            color = SUCCESS_COLOR if self.logic.round_won else ERROR_COLOR
-            self.show_message(msg, color)
+            color = ERROR_COLOR
+            if success: color = SUCCESS_COLOR
+            if self.logic.round_won: color = SUCCESS_COLOR
+
+            self.show_message(msg, color, duration=120)
+
+            is_bot_turn = (self.game_mode == "EvE") or (self.game_mode == "PvE" and self.current_turn == 2)
 
             if success:
-                # Перехід далі (Злиття)
-                self.logic.start_merge_phase()
-                for c in self.numb_cards + self.op_cards:
-                    c.is_selected = False
-                    c.is_merge_selected = False
-                self.merge_selection_queue.clear()
-            else:
-                # Game Over або критична помилка
-                pass  # Стан вже змінився в logic
+                # Хід успішний (карти видалені).
+                # НЕЗАЛЕЖНО від перемоги, йдемо по ланцюжку відновлення карт.
 
-            # Оновлюємо UI (карти зникають і нові летять на місця)
+                if is_bot_turn:
+                    # Бот пропускає злиття -> Драфт
+                    self.logic.start_card_selection()
+                else:
+                    # Людина йде на злиття -> Потім Драфт
+                    self.logic.start_merge_phase()
+
+                self.merge_selection_queue.clear()
+                self.logic.clear_selection()
+                # Очищаємо список візуальних карт, щоб оновити їх у наступній фазі
+                self.choice_cards.clear()
+            else:
+                # Помилка/Штраф -> Перехід ходу
+                self.switch_turn()
+
             self.sync_cards_with_logic()
 
     def apply_video_settings(self):
@@ -144,6 +172,17 @@ class Game:
         self.btn_diff_1 = Button(center_x - 200, 420, 120, 50, "EASY")
         self.btn_diff_2 = Button(center_x - 60, 420, 120, 50, "NORMAL")
         self.btn_diff_3 = Button(center_x + 80, 420, 120, 50, "HARD")
+
+        self.btn_mode_pve = Button(center_x - 220, 480, 140, 40, "Людина vs PC")
+        self.btn_mode_pvp = Button(center_x - 60, 480, 140, 40, "PvP (Local)")
+        self.btn_mode_eve = Button(center_x + 100, 480, 140, 40, "PC vs PC")
+
+        # Виділяємо дефолтний режим
+        self.btn_mode_pve.is_selected = True
+        # --------------------------------------------------
+
+        # Зсуваємо кнопку START трохи нижче
+        self.btn_start = Button(center_x - 100, 580, 200, 60, "START GAME", color=SUCCESS_COLOR)
 
         # Відновлення стану кнопок
         if self.selected_difficulty == 1:
@@ -179,17 +218,28 @@ class Game:
         self.btn_clear_choices = Button(center_x + 120, h - 100, 150, 50, "Відмінити", color=ERROR_COLOR)
 
     def start_game(self):
-        if self.name_input.text.strip():
-            self.player_name = self.name_input.text.strip()
+        p1_name = self.name_input.text.strip() or "Player 1"
 
-        self.logic = GameLogic(self.player_name, self.selected_difficulty)
+        # 1. Створюємо гравців
+        if self.game_mode == "PvE":
+            self.logic_p1 = GameLogic(p1_name, self.selected_difficulty)
+            self.logic_p2 = GameLogic("Robot 🤖", self.selected_difficulty)
+
+        elif self.game_mode == "PvP":
+            self.logic_p1 = GameLogic(p1_name, self.selected_difficulty)
+            self.logic_p2 = GameLogic("Player 2", self.selected_difficulty)
+
+        elif self.game_mode == "EvE":
+            self.logic_p1 = GameLogic("Bot Alpha", self.selected_difficulty)
+            self.logic_p2 = GameLogic("Bot Omega", self.selected_difficulty)
+
+        # 2. Налаштовуємо старт
+        self.current_turn = 1
+        self.logic = self.logic_p1  # Починає перший
         self.in_menu = False
 
-        # Спочатку синхронізуємо карти (це створить об'єкти)
         self.sync_cards_with_logic()
 
-        # А перевірку на deadlock тут НЕ викликаємо вручну,
-        # вона сама спрацює в першому кадрі handle_playing_state
     # ==========================================
     # ЛОГІКА СИНХРОНІЗАЦІЇ UI ТА C++
     # ==========================================
@@ -512,6 +562,30 @@ class Game:
         if self.btn_diff_3.handle_event(event):
             self.selected_difficulty = 3
             self.btn_diff_1.is_selected, self.btn_diff_2.is_selected, self.btn_diff_3.is_selected = False, False, True
+            # --- ОБРОБКА ВИБОРУ РЕЖИМУ ---
+        if self.btn_mode_pve.handle_event(event):
+            self.game_mode = "PvE"
+            self.btn_mode_pve.is_selected = True
+            self.btn_mode_pvp.is_selected = False
+            self.btn_mode_eve.is_selected = False
+
+        if self.btn_mode_pvp.handle_event(event):
+            self.game_mode = "PvP"
+            self.btn_mode_pve.is_selected = False
+            self.btn_mode_pvp.is_selected = True
+            self.btn_mode_eve.is_selected = False
+
+        if self.btn_mode_eve.handle_event(event):
+            self.game_mode = "EvE"
+            self.btn_mode_pve.is_selected = False
+            self.btn_mode_pvp.is_selected = False
+            self.btn_mode_eve.is_selected = True
+            # ------------------------------
+
+            if self.btn_start.handle_event(event):
+                self.start_game()
+
+
         if self.btn_start.handle_event(event):
             self.start_game()
 
@@ -654,43 +728,60 @@ class Game:
             self.update_choice_cards()
 
     def handle_selection_state(self, event):
-        # 1. Кнопка "В меню"
+        # 1. Визначаємо, чий зараз хід
+        is_bot_turn = (self.game_mode == "EvE") or (self.game_mode == "PvE" and self.current_turn == 2)
+
+        # 2. Якщо хід БОТА — блокуємо всі натискання людини (окрім виходу)
+        if is_bot_turn:
+            if self.btn_back_to_menu_game.handle_event(event):
+                self.in_menu = True
+                self.logic = None
+            return  # <--- Виходимо, щоб людина нічого не зламала
+
+        # 3. Далі йде логіка ТІЛЬКИ для людини
         if self.btn_back_to_menu_game.handle_event(event):
-            self.in_menu = True
-            self.logic = None
+            self.in_menu = True;
+            self.logic = None;
             return
 
-        # 2. Обробка кліків по картах (вибір/зняття вибору)
+        # Кліки по картах
         for card in self.choice_cards:
             if card.handle_event(event):
                 if card.is_selected:
                     self.logic.deselect_new_card(card.index)
+                    card.is_selected = False
                 else:
-                    self.logic.select_new_card(card.index)
-                self.update_choice_cards()
+                    if self.logic.select_new_card(card.index):
+                        card.is_selected = True
 
-        # 3. Кнопка "Відмінити" (Очистити вибір)
         if self.btn_clear_choices.handle_event(event):
             self.logic.clear_new_selection()
-            self.update_choice_cards()
+            for c in self.choice_cards: c.is_selected = False
 
-        # 4. Кнопка "ГОТОВО" (Підтвердити вибір)
+        # --- КНОПКА "ГОТОВО" ---
         if self.confirm_choice_btn.handle_event(event):
-            # Перевіряємо, чи вибрано хоча б одну карту
             if len(self.logic.selected_choice_indices) > 0:
-                # Викликаємо логіку (вона сама розбереться: це перемога чи дедлок)
+
+                was_special_phase = (self.logic.state == GameState.SPECIAL_SELECTION)
+
+                self.choice_cards.clear()  # Очищення UI
                 self.logic.confirm_card_selection()
 
-                # Оновлюємо екран залежно від того, куди нас перекинула логіка
-                if self.logic.state == GameState.PLAYING:
-                    self.sync_cards_with_logic()  # Повертаємось у гру
-                elif self.logic.state == GameState.SPECIAL_SELECTION:
-                    self.update_choice_cards()  # Переходимо до вибору спецкарт
-            else:
-                # Якщо гравець нічого не вибрав і натиснув ГОТОВО
-                self.show_message("Оберіть хоча б одну!", ERROR_COLOR)
+                if was_special_phase:
+                    # Ми щойно обрали спецкарту -> Новий рівень
+                    self.sync_cards_with_logic()
+                    self.update_choice_cards()
 
-    # ==========================================
+                elif self.logic.state == GameState.PLAYING:
+                    # Ми завершили звичайний добір карт -> Перевірка на перемогу в раунді
+                    if self.logic.round_won:
+                        self.logic.start_special_selection()
+                        self.update_choice_cards()
+                    else:
+                        self.sync_cards_with_logic()
+                        self.switch_turn()
+            else:
+                self.show_message("Оберіть хоча б одну!", ERROR_COLOR)
     # РИСУВАННЯ (DRAW LOOPS)
     # ==========================================
     def draw_menu(self):
@@ -708,6 +799,9 @@ class Game:
         self.btn_diff_1.draw(self.screen)
         self.btn_diff_2.draw(self.screen)
         self.btn_diff_3.draw(self.screen)
+        self.btn_mode_pve.draw(self.screen)
+        self.btn_mode_pvp.draw(self.screen)
+        self.btn_mode_eve.draw(self.screen)
         self.btn_start.draw(self.screen)
         self.btn_settings.draw(self.screen)
         self.btn_exit_menu.draw(self.screen)
@@ -726,10 +820,10 @@ class Game:
         self.btn_settings_back.draw(self.screen)
 
     def draw_playing_state(self):
-        # Оновлення логіки анімації
+        # 1. Оновлення анімації лічильника (вона має бути тут!)
         self.update_calculation_animation()
 
-        # Фізика карт
+        # 2. Фізика і малювання столу
         for c in self.numb_cards + self.op_cards + self.special_cards:
             c.update()
 
@@ -737,33 +831,86 @@ class Game:
         self.draw_info()
         self.draw_zones_and_counters()
 
+        # Малюємо карти
         cards_to_draw = self.numb_cards + self.op_cards + self.special_cards
         cards_to_draw.sort(key=lambda c: (c.is_selected, c.is_hovered))
-
         for c in cards_to_draw: c.draw(self.screen)
 
-        # --- МАЛЮВАННЯ ЛІЧИЛЬНИКА ---
+        # 3. Лічильник під час анімації
         if self.is_animating_calculation:
-            # Малюємо затемнення
             overlay = pygame.Surface((CONFIG["WIDTH"], CONFIG["HEIGHT"]), pygame.SRCALPHA)
-            overlay.fill((0, 0, 0, 100))
+            overlay.fill((0, 0, 0, 150))
             self.screen.blit(overlay, (0, 0))
 
-            # Форматуємо число
             val_text = f"{self.anim_current_value:.3f}".rstrip('0').rstrip('.')
-
-            # Великий текст по центру
-            font_big = get_font(120)
+            font_big = get_font(140)
             text_surf = font_big.render(val_text, True, ACCENT_COLOR)
 
-            # Тінь тексту
-            shadow_surf = font_big.render(val_text, True, (0, 0, 0))
-            center_x, center_y = CONFIG["WIDTH"] // 2, CONFIG["HEIGHT"] // 2
+            cx, cy = CONFIG["WIDTH"] // 2, CONFIG["HEIGHT"] // 2
+            self.screen.blit(text_surf, text_surf.get_rect(center=(cx, cy)))
 
-            self.screen.blit(shadow_surf, shadow_surf.get_rect(center=(center_x + 5, center_y + 5)))
-            self.screen.blit(text_surf, text_surf.get_rect(center=(center_x, center_y)))
+        # 4. ЛОГІКА БОТА
+        is_bot_turn = (self.game_mode == "EvE") or (self.game_mode == "PvE" and self.current_turn == 2)
 
-        # Кнопки (не малюємо їх поверх лічильника, або робимо неактивними візуально)
+        # Бот думає ТІЛЬКИ якщо не йде анімація і гра в стані PLAYING
+        if is_bot_turn and not self.is_animating_calculation and self.logic.state == GameState.PLAYING:
+            self.ai_timer += 1
+
+            # ФАЗА 0: ДУМАЄМО (1.5 сек)
+            if self.ai_phase == 0:
+                if self.ai_timer > 90:
+                    self.ai_phase = 1;
+                    self.ai_timer = 0
+
+                    # ФАЗА 1: ВИБИРАЄМО КАРТИ
+            elif self.ai_phase == 1:
+                try:
+                    # Пробуємо отримати хід від C++
+                    found_move = self.logic.make_ai_turn()
+                except Exception as e:
+                    print(f"CRITICAL AI ERROR: {e}")
+                    found_move = False
+
+                if found_move:
+                    # Якщо все ок
+                    self.sync_cards_with_logic()
+                    self.calculate_card_targets()
+                    self.ai_phase = 2
+                else:
+                    # Якщо помилка або немає ходів
+                    self.show_message("AI Error: Skip Turn", ERROR_COLOR)
+                    self.logic.player.set_hp(-5)
+                    if self.logic.player.get_hp() <= 0:
+                        self.logic.state = GameState.GAME_OVER
+                    else:
+                        self.logic.start_card_selection()
+                        self.logic.is_deadlock_recovery = True
+
+                    self.ai_phase = 0
+                self.ai_timer = 0
+
+            # ФАЗА 2: ДИВИМОСЬ (1 сек паузи перед ударом)
+            elif self.ai_phase == 2:
+                if self.ai_timer > 60:
+                    self.ai_phase = 3;
+                    self.ai_timer = 0
+
+            # ФАЗА 3: ТИСНЕМО "ОБЧИСЛИТИ"
+            elif self.ai_phase == 3:
+                valid, res = self.logic.preview_calculation()
+                if valid:
+                    # Запускаємо анімацію лічильника
+                    self.is_animating_calculation = True
+                    self.anim_start_time = pygame.time.get_ticks()
+                    self.anim_target_value = res
+                    self.anim_start_value = 0.0
+                else:
+                    self.switch_turn()  # Страховка від глюків
+
+                self.ai_phase = 0;
+                self.ai_timer = 0
+
+        # Кнопки (тільки коли немає анімації)
         if not self.is_animating_calculation:
             self.calculate_button.draw(self.screen)
             self.clear_button.draw(self.screen)
@@ -799,58 +946,131 @@ class Game:
         self.draw_message()
 
     def draw_selection_state(self):
-        # Оновлення фізики
+        # Малюємо фон
         for c in self.numb_cards + self.op_cards + self.special_cards:
-            c.update()
-
-        self.draw_zones_and_counters()
-
-        # --- ВИПРАВЛЕННЯ ТУТ ---
-        # Малюємо фон (руку), включаючи спеціальні карти
-        for c in self.numb_cards + self.op_cards + self.special_cards:
+            c.update();
             c.draw(self.screen)
+        self.draw_zones_and_counters()
 
         w, h = CONFIG["WIDTH"], CONFIG["HEIGHT"]
         overlay = pygame.Surface((w, h), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 220))
+        overlay.fill((0, 0, 0, 220));
         self.screen.blit(overlay, (0, 0))
 
-        # --- ОНОВЛЕНИЙ ТЕКСТ ---
-        if self.logic.state == GameState.CARD_SELECTION:
-            current = len(self.logic.selected_choice_indices)
-            limit = self.logic.selection_limit
-            # Показуємо "Обрано: 2 / 6"
-            txt = f"Оберіть карти: {current} / {limit}"
-            col = TEXT_COLOR
-            if current == limit: col = ERROR_COLOR  # Червоний, якщо ліміт
-        else:
-            txt = "Оберіть спеціальну карту"
-            col = (200, 100, 255)
+        if not self.choice_cards:
+            self.update_choice_cards()
+            if not self.choice_cards: return
 
-        title = FONT_LARGE().render(txt, True, col)
-        self.screen.blit(title, title.get_rect(center=(w // 2, 100)))
+        # --- АВТО-ДОБІР БОТА ---
+        is_bot_turn = (self.game_mode == "EvE") or (self.game_mode == "PvE" and self.current_turn == 2)
 
-        for card in self.choice_cards:
-            card.draw(self.screen)
+        if is_bot_turn:
+            self.ai_timer += 1
+            if self.ai_timer > 25:
+                self.ai_timer = 0
+                import random
+
+                needed = 1 if self.logic.state == GameState.SPECIAL_SELECTION else self.logic.selection_limit
+                curr = len(self.logic.selected_choice_indices)
+
+                # 1. Добираємо
+                if curr < needed:
+                    avail = [i for i in range(len(self.choice_cards)) if i not in self.logic.selected_choice_indices]
+                    if avail:
+                        pick = random.choice(avail)
+                        if self.logic.select_new_card(pick):
+                            self.choice_cards[pick].is_selected = True  # Візуал
+                    else:
+                        curr = needed
+
+                        # 2. ПІДТВЕРДЖУЄМО
+                if curr >= needed:
+                    was_special_phase = (self.logic.state == GameState.SPECIAL_SELECTION)
+
+                    self.choice_cards.clear()
+                    self.logic.confirm_card_selection()
+
+                    if was_special_phase:
+                        # Бот обрав нагороду -> Новий раунд
+                        self.sync_cards_with_logic()
+                        self.update_choice_cards()  # Оновлюємо, якщо раптом треба
+
+                    elif self.logic.state == GameState.PLAYING:
+                        # Бот дібрав карти. Перевірка на перемогу.
+                        if self.logic.round_won:
+                            # Перемога -> Йдемо за спецкартою
+                            self.logic.start_special_selection()
+                            self.update_choice_cards()
+                        else:
+                            # Звичайний хід -> Передача ходу
+                            self.sync_cards_with_logic()
+                            self.switch_turn()
+
+                    return
+        # -----------------------
+
+        # Текст
+        title_txt = "Оберіть карти"
+        if self.logic.state == GameState.SPECIAL_SELECTION: title_txt = "Оберіть СПЕЦКАРТУ! (Нагорода)"
+
+        t_surf = FONT_LARGE().render(title_txt, True, ACCENT_COLOR)
+        self.screen.blit(t_surf, t_surf.get_rect(center=(w // 2, 100)))
+
+        for c in self.choice_cards: c.draw(self.screen)
 
         self.confirm_choice_btn.draw(self.screen)
-        self.btn_clear_choices.draw(self.screen)
-        self.btn_back_to_menu_game.draw(self.screen)
+        if not is_bot_turn:
+            self.btn_clear_choices.draw(self.screen)
+            self.btn_back_to_menu_game.draw(self.screen)
+
         self.draw_message()
 
-    def draw_game_over(self):
-        w, h = CONFIG["WIDTH"], CONFIG["HEIGHT"]
-        self.screen.fill((40, 0, 0))
-        title = FONT_LARGE().render("ГРА ЗАКІНЧЕНА", True, ERROR_COLOR)
-        self.screen.blit(title, title.get_rect(center=(w // 2, h // 2)))
-        self.btn_back_to_menu_game.draw(self.screen)
 
     def draw_victory(self):
         w, h = CONFIG["WIDTH"], CONFIG["HEIGHT"]
         self.screen.fill((0, 40, 0))
-        title = FONT_LARGE().render("ПЕРЕМОГА!", True, SUCCESS_COLOR)
-        self.screen.blit(title, title.get_rect(center=(w // 2, h // 2)))
+
+        # Показуємо ім'я переможця
+        winner_name = self.logic.player_name
+
+        title = FONT_TITLE().render("ПЕРЕМОГА!", True, SUCCESS_COLOR)
+        subtitle = FONT_LARGE().render(f"Переміг: {winner_name}", True, TEXT_COLOR)
+
+        self.screen.blit(title, title.get_rect(center=(w // 2, h // 2 - 50)))
+        self.screen.blit(subtitle, subtitle.get_rect(center=(w // 2, h // 2 + 20)))
+
         self.btn_back_to_menu_game.draw(self.screen)
+
+    def draw_game_over(self):
+        w, h = CONFIG["WIDTH"], CONFIG["HEIGHT"]
+        self.screen.fill((40, 0, 0))
+
+        title = FONT_TITLE().render("ГРА ЗАКІНЧЕНА", True, ERROR_COLOR)
+        # Якщо це PvP, можна написати хто програв
+        subtitle = FONT_LARGE().render(f"{self.logic.player_name} програв", True, TEXT_COLOR)
+
+        self.screen.blit(title, title.get_rect(center=(w // 2, h // 2 - 50)))
+        self.screen.blit(subtitle, subtitle.get_rect(center=(w // 2, h // 2 + 20)))
+
+        self.btn_back_to_menu_game.draw(self.screen)
+
+    def switch_turn(self):
+        """Передає хід наступному гравцю"""
+        if self.current_turn == 1:
+            self.current_turn = 2
+            self.logic = self.logic_p2
+        else:
+            self.current_turn = 1
+            self.logic = self.logic_p1
+
+        # Сповіщення на екрані
+        self.show_message(f"Хід гравця: {self.logic.player_name}", ACCENT_COLOR, duration=120)
+
+        # Завантажуємо карти нового гравця на стіл
+        self.sync_cards_with_logic()
+
+        # Очищаємо чергу злиття
+        self.merge_selection_queue.clear()
 
     # ==========================================
     # ГОЛОВНИЙ ЦИКЛ
