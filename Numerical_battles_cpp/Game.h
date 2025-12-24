@@ -11,9 +11,15 @@ class Player;
 class Game {
     Player* player;
     Enemy* enemy;
+    vector<string> game_logs;
 public:
     Game();
     Game(Player* player);
+
+    void addLog(string message);
+    vector<string> getLogs();
+    void clearLogs();
+
     Player* getPlayer();
     int generateN();
     double generateFairTarget();

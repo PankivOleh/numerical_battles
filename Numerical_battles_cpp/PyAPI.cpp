@@ -4,6 +4,8 @@
 #include "Player.h"
 #include "Hand.h"
 #include "Card.h"
+#include "AI.h"
+
 
 namespace py = pybind11;
 
@@ -75,6 +77,10 @@ PYBIND11_MODULE(PyAPI_py, m) {
         .def("create_enemy", &Game::createEnemy, py::return_value_policy::reference)
         .def("check_number", &Game::checkNumber)
 
+        .def("add_log", &Game::addLog)
+        .def("get_logs", &Game::getLogs)
+        .def("clear_logs", &Game::clearLogs)
+
         // Методи, що передають володіння новими об'єктами Python-у (take_ownership)
         .def("generate_choise", &Game::generateChoise, py::return_value_policy::take_ownership)
         .def("generate_special_choise", &Game::generateSpecialChoise, py::return_value_policy::take_ownership)
@@ -85,4 +91,8 @@ PYBIND11_MODULE(PyAPI_py, m) {
         .def("merge_cards", &Game::mergeCard)
         .def("use_special_card", &Game::useSpecial)
         .def("remove_cards", &Game::removeCards);
+
+    py::class_<AI>(m, "AI")
+        .def_static("find_best_move", &AI::findBestMove);
+
 }

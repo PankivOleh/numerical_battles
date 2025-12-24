@@ -47,17 +47,28 @@ int Player::set_hp(int hp) {
         }
         return 0 ;
     }
-int Player::set_dificult(int difficult) {\
-        if(difficult>3 || difficult<1) {
-            return 1 ;
-        }
-        maxhp = this->difficult*maxhp ;
-        maxhp = maxhp/difficult;
-        if(maxhp < hp) {
-            hp = maxhp ;
-        }
-        return 0 ;
+int Player::set_dificult(int difficult) {
+    if(difficult > 3 || difficult < 1) {
+        return 1;
     }
+
+    this->difficult = difficult;
+
+    if (difficult == 1) {
+        this->maxhp = 100;
+    }
+    else if (difficult == 2) {
+        this->maxhp = 60;
+    }
+    else if (difficult == 3) {
+        this->maxhp = 30;
+    }
+    if(this->hp > this->maxhp) {
+        this->hp = this->maxhp;
+    }
+
+    return 0;
+}
 int Player::set_level(int level) {
         if(level<1) {
             return 1 ;

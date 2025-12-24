@@ -3,11 +3,29 @@
 #include "Game.h"
 #include <cmath>
 #include <algorithm>
+#include <iomanip>
+#include <sstream>
 
 using namespace std;
 
 // методи не призначені для пайтону
 
+
+void Game::addLog(string message) {
+    // Обмежуємо історію останніми 30 записами, щоб не забивати пам'ять
+    if (game_logs.size() > 30) {
+        game_logs.erase(game_logs.begin());
+    }
+    game_logs.push_back(message);
+}
+
+vector<string> Game::getLogs() {
+    return game_logs;
+}
+
+void Game::clearLogs() {
+    game_logs.clear();
+}
 
 
 double Game::generateFairTarget() {
@@ -319,12 +337,21 @@ void Game::setHand() {
 void Game::mergeCard(int n1, int n2, int n3) {
     vector<Numb_card*>* v1 = player->get_hand()->get_numb_hand();
     vector<Operator_card*>* v2 = player->get_hand()->get_operator_hand();
+
+    double v1_val = (*v1)[n1]->get_numb();
+    char op_val = (*v2)[n2]->get_op();
+    double v2_val = (*v1)[n3]->get_numb();
+
     Numb_card* nc1 = (*v1)[n1];
     Numb_card* nc2 = (*v1)[n3];
     Operator_card* oc1 = (*v2)[n2];
     Numb_card newc = (this->getPlayer()->get_hand()->merge_cards(nc1,oc1,nc2));
     player->get_hand()->check_hand();
     player->get_hand()->add_numb_card(newc);
+
+    stringstream ss;
+    ss << "Merge: " << v1_val << " " << op_val << " " << v2_val << " = " << newc.get_numb();
+    addLog(ss.str());
 }
 int Game::get_numb_count() {
     return getPlayer()->get_hand()->get_numb_count();
@@ -369,10 +396,13 @@ void Game::useSpecial(int n) {
     this->enemy->setNumber((double)numb);
     this->getPlayer()->get_hand()->get_special_card(n)->use_card();
     this->player->get_hand()->check_hand();
+    stringstream ss;
+    ss << "Special used: Target changed by " << numb;
+    addLog(ss.str());
 }
 
 
-double Game::calculate(string numbers) {\
+double Game::calculate(string numbers) {
     stack <double> numbstack;
     vector<string> arr = createarr(numbers);
     double numb1 , numb2 , result;
@@ -407,6 +437,11 @@ double Game::calculate(string numbers) {\
     }
     result = numbstack.top();
     numbstack.pop();
+
+    stringstream ss;
+    ss << "Calc: " << numbers << " = " << fixed << setprecision(2) << result;
+    addLog(ss.str());
+
     return result;
 }
 
