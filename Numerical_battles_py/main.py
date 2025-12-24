@@ -36,6 +36,8 @@ class Game:
 
         self.merge_selection_queue = []
 
+        self.full_report = []
+
         # --- ЗМІННІ ДЛЯ АНІМАЦІЇ ЛІЧИЛЬНИКА ---
         self.is_animating_calculation = False
         self.anim_start_time = 0
@@ -76,6 +78,85 @@ class Game:
         self.message = ""
         self.message_color = TEXT_COLOR
         self.message_timer = 0
+
+    def save_game_report(self):
+        """Зберігає лог гри у текстовий файл з датою"""
+        if not self.logic: return
+
+        # Дозбируємо залишки логів з поточного ходу (які ще не перенесені switch_turn)
+        current_logs = self.logic.game.get_logs()
+        final_history = self.full_report + current_logs
+
+        import datetime
+        now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f"Report_{now}.txt"
+
+        try:
+            with open(filename, "w", encoding="utf-8") as f:
+                f.write(f"=== ЗВІТ ПРО ГРУ ===\n")
+                f.write(f"Дата: {now}\n")
+                f.write(f"Режим: {self.game_mode}\n")
+                f.write(f"Гравці: {self.logic_p1.player_name} vs {self.logic_p2.player_name}\n")
+                f.write(
+                    f"Переможець: {self.logic.player_name if self.logic.state == GameState.VICTORY else 'Ніхто (здався)'}\n")
+                f.write("-" * 30 + "\n")
+                f.write("ХРОНОЛОГІЯ ПОДІЙ:\n")
+
+                for line in final_history:
+                    f.write(line + "\n")
+
+                f.write("-" * 30 + "\n")
+                f.write("Кінець звіту.\n")
+
+            # Показуємо повідомлення (воно тепер буде видно завдяки фіксу в draw_victory)
+            self.show_message(f"Збережено: {filename}", SUCCESS_COLOR, duration=180)
+            print(f"Report saved to {filename}")
+
+        except Exception as e:
+            self.show_message(f"Помилка збереження!", ERROR_COLOR)
+            print(f"Save error: {e}")
+
+    def draw_logs(self):
+        """Малює історію ходів у лівому нижньому куті"""
+
+        # Об'єднуємо глобальну історію + поточні незакомічені логи C++
+        current_view_logs = self.full_report[:]
+        if self.logic:
+            current_view_logs += self.logic.game.get_logs()
+
+        # Параметри панелі
+        panel_w = 400
+        panel_h = 250
+        x = 20
+        y = CONFIG["HEIGHT"] - panel_h - 20
+
+        s = pygame.Surface((panel_w, panel_h), pygame.SRCALPHA)
+        s.fill((0, 0, 0, 180))
+        self.screen.blit(s, (x, y))
+        pygame.draw.rect(self.screen, (100, 100, 100), (x, y, panel_w, panel_h), 1)
+
+        title = FONT_TINY().render("GAME LOG", True, (150, 150, 150))
+        self.screen.blit(title, (x + 10, y + 5))
+
+        start_y = y + 30
+        line_height = 20
+
+        # Показуємо тільки останні 10 записів
+        recent_logs = current_view_logs[-10:]
+
+        for i, line in enumerate(recent_logs):
+            col = TEXT_COLOR
+            if "HIT" in line or "Success" in line:
+                col = SUCCESS_COLOR
+            elif "MISS" in line or "Error" in line or "HP" in line:
+                col = ERROR_COLOR
+            elif "Calc" in line:
+                col = (100, 200, 255)
+            elif ">>>" in line:
+                col = ACCENT_COLOR  # Колір зміни ходу
+
+            txt_surf = FONT_TINY().render(line, True, col)
+            self.screen.blit(txt_surf, (x + 10, start_y + i * line_height))
 
     def apply_video_settings(self):
         """Застосовує налаштування екрану. Виправляє зсув вікна."""
@@ -223,6 +304,10 @@ class Game:
         self.confirm_choice_btn = Button(center_x - 100, h - 100, 200, 50, "ГОТОВО")
         self.btn_clear_choices = Button(center_x + 120, h - 100, 150, 50, "Відмінити", color=ERROR_COLOR)
 
+        # --- НОВА КНОПКА: ЗБЕРЕГТИ ЗВІТ ---
+        # Розміщуємо її внизу по центру (будемо показувати на екрані фіналу)
+        self.btn_save_report = Button(center_x - 100, h - 150, 200, 50, "ЗБЕРЕГТИ ЗВІТ", color=(0, 100, 200))
+
     def start_game(self):
         p1_name = self.name_input.text.strip() or "Player 1"
 
@@ -243,6 +328,10 @@ class Game:
         self.current_turn = 1
         self.logic = self.logic_p1  # Починає перший
         self.in_menu = False
+
+        # --- ОЧИЩЕННЯ ІСТОРІЇ ---
+        self.full_report = []
+        self.full_report.append(f"--- ГРА ПОЧАЛАСЯ ({self.game_mode}) ---")
 
         self.sync_cards_with_logic()
 
@@ -922,6 +1011,7 @@ class Game:
             self.clear_button.draw(self.screen)
             self.btn_back_to_menu_game.draw(self.screen)
 
+        self.draw_logs()
         self.draw_message()
 
     def draw_merge_state(self):
@@ -949,6 +1039,7 @@ class Game:
         self.confirm_merge_btn.draw(self.screen)
         self.skip_merge_btn.draw(self.screen)
         self.btn_back_to_menu_game.draw(self.screen)
+        self.draw_logs()
         self.draw_message()
 
     def draw_selection_state(self):
@@ -1029,39 +1120,53 @@ class Game:
             self.btn_clear_choices.draw(self.screen)
             self.btn_back_to_menu_game.draw(self.screen)
 
+        self.draw_logs()
         self.draw_message()
 
-
     def draw_victory(self):
+        # ... (код малювання фону і тексту без змін) ...
         w, h = CONFIG["WIDTH"], CONFIG["HEIGHT"]
         self.screen.fill((0, 40, 0))
 
-        # Показуємо ім'я переможця
         winner_name = self.logic.player_name
-
         title = FONT_TITLE().render("ПЕРЕМОГА!", True, SUCCESS_COLOR)
         subtitle = FONT_LARGE().render(f"Переміг: {winner_name}", True, TEXT_COLOR)
 
         self.screen.blit(title, title.get_rect(center=(w // 2, h // 2 - 50)))
         self.screen.blit(subtitle, subtitle.get_rect(center=(w // 2, h // 2 + 20)))
 
+        self.btn_save_report.draw(self.screen)
         self.btn_back_to_menu_game.draw(self.screen)
 
+        # --- НОВЕ: Малюємо повідомлення поверх усього ---
+        self.draw_message()
+
     def draw_game_over(self):
+        # ... (код малювання фону і тексту без змін) ...
         w, h = CONFIG["WIDTH"], CONFIG["HEIGHT"]
         self.screen.fill((40, 0, 0))
 
         title = FONT_TITLE().render("ГРА ЗАКІНЧЕНА", True, ERROR_COLOR)
-        # Якщо це PvP, можна написати хто програв
         subtitle = FONT_LARGE().render(f"{self.logic.player_name} програв", True, TEXT_COLOR)
 
         self.screen.blit(title, title.get_rect(center=(w // 2, h // 2 - 50)))
         self.screen.blit(subtitle, subtitle.get_rect(center=(w // 2, h // 2 + 20)))
 
+        self.btn_save_report.draw(self.screen)
         self.btn_back_to_menu_game.draw(self.screen)
 
+        # --- НОВЕ: Малюємо повідомлення ---
+        self.draw_message()
+
+
     def switch_turn(self):
+        # 1. ЗАБИРАЄМО ЛОГИ ПОТОЧНОГО ГРАВЦЯ В ЗАГАЛЬНИЙ ЗВІТ
+        if self.logic:
+            logs = self.logic.game.get_logs()  # Отримуємо з C++
+            self.full_report.extend(logs)  # Додаємо в Python список
+            self.logic.game.clear_logs()  # Чистимо C++, щоб не дублювати
         """Передає хід наступному гравцю"""
+
         if self.current_turn == 1:
             self.current_turn = 2
             self.logic = self.logic_p2
@@ -1070,8 +1175,9 @@ class Game:
             self.logic = self.logic_p1
 
         # Сповіщення на екрані
-        self.show_message(f"Хід гравця: {self.logic.player_name}", ACCENT_COLOR, duration=120)
-
+        msg = f"Хід гравця: {self.logic.player_name}"
+        self.show_message(msg, ACCENT_COLOR, duration=120)
+        self.full_report.append(f">>> {msg}")
         # Завантажуємо карти нового гравця на стіл
         self.sync_cards_with_logic()
 
@@ -1105,6 +1211,8 @@ class Game:
                         if self.btn_back_to_menu_game.handle_event(event):
                             self.in_menu = True
                             self.logic = None
+                        if self.btn_save_report.handle_event(event):
+                            self.save_game_report()
 
             self.draw_background_grid()
 

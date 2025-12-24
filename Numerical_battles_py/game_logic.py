@@ -255,6 +255,7 @@ class GameLogic:
             self.round_won = True
             match_type = "=" if check == 0 else "≈"
             msg = f"Успіх! {result_value:.3f} {match_type} {self.target_number:.3f}"
+            self.game.add_log(f"HIT: {self.player_name} ({msg})")
             success_state = True
         else:
             self.player.set_hp(-10)
@@ -264,6 +265,7 @@ class GameLogic:
                 msg = "Гра закінчена! HP вичерпано."
                 return False, msg
             msg = f"Промах! -10 HP. {result_value:.3f} != {self.target_number:.3f}"
+            self.game.add_log(f"MISS: {self.player_name} (-10HP)")
             success_state = True
 
         return success_state, msg
@@ -376,6 +378,8 @@ class GameLogic:
         if self.level > self.max_level:
             self.state = GameState.VICTORY
             return
+
+        self.game.add_log(f"--- Round {self.level} Started ---")
 
         self.player.set_level(self.level)
 
