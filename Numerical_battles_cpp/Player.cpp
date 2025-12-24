@@ -11,11 +11,19 @@ Player::Player(string name, int maxhp, int hp, int level, int difficult ,Hand* h
         this ->hp = hp ;
         this -> level = level ;
         this -> difficult = difficult ;
-        this -> maxhp = maxhp/difficult ;
-        if(this->hp >this-> maxhp) {
-            this->hp = this-> maxhp ;
-        }
         this -> hand = hand ;
+          if (difficult == 1) {
+        this->maxhp = 100;
+          }
+          else if (difficult == 2) {
+        this->maxhp = 60;
+          }
+        else if (difficult == 3) {
+            this->maxhp = 30;
+        }
+    if(this->hp >this-> maxhp) {
+        this->hp = this-> maxhp ;
+    }
     }
 
 int Player:: get_hp() {
