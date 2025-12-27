@@ -51,37 +51,179 @@ class GameLogic:
         self.max_special_choices = 1
 
     def make_ai_turn(self):
-        """
-        Автоматичний хід бота. Повертає True, якщо хід зроблено.
-        """
-        # 1. Отримуємо дані для C++
+        import random
         numb_data, op_data, _ = self.get_hand_data()
 
-        # 2. Питаємо C++, що робити
-        # move = [idx_n1, idx_op, idx_n2]
-        try:
-            move = api.AI.find_best_move(numb_data, op_data, self.target_number)
-        except Exception as e:
-            print(f"AI Error: {e}")
+        if len(numb_data) < 2 or len(op_data) < 1:
             return False
 
-        idx_n1, idx_op, idx_n2 = move[0], move[1], move[2]
+        # === 1. ШАНСИ ===
+        threshold = 0
+        if self.difficulty == 1:
+            threshold = 30  # Easy
+        elif self.difficulty == 2:
+            threshold = 20  # Normal
+        elif self.difficulty == 3:
+            threshold = 10  # Hard
 
-        # 3. Виконуємо хід, якщо він валідний
-        if idx_n1 != -1:
-            print(f"[AI] Bot decided: {numb_data[idx_n1]} {op_data[idx_op]} {numb_data[idx_n2]}")
-            self.clear_selection()
+        # === 2. КИДАЄМО КУБИК ===
+        roll = random.randint(1, 100)
+        is_mistake = (roll <= threshold)
 
-            # Послідовність важлива!
-            self.select_card('numb', idx_n1)
-            self.select_card('op', idx_op)
-            self.select_card('numb', idx_n2)
+        print(f"\n[AI] Difficulty: {self.difficulty}")
+        print(f"[AI] Roll: {roll} (Threshold: {threshold})")
+        print(f"[AI] Decision: {'>>> RANDOM ERROR <<<' if is_mistake else '>>> SMART C++ <<<'}")
+
+        move_path = []
+
+        if is_mistake:
+            # === ТУПО РАНДОМ ===
+            idx_n1 = random.randint(0, len(numb_data) - 1)
+            idx_n2 = idx_n1
+            while idx_n2 == idx_n1:
+                idx_n2 = random.randint(0, len(numb_data) - 1)
+            idx_op = random.randint(0, len(op_data) - 1)
+
+            move_path = [idx_n1, idx_op, idx_n2]
+
+        else:
+            # === СМАРТ (C++) ===
+            try:
+                # ПРИБРАВ ", 3" - ТЕПЕР АРГУМЕНТІВ РІВНО СТІЛЬКИ, СКІЛЬКИ ТРЕБА
+                move_path = api.AI.find_best_move(numb_data, op_data, self.target_number)
+            except Exception as e:
+                print(f"[AI Error] {e}")
+                move_path = []
+
+            # Якщо С++ нічого не знайшов - беремо перші дві карти (не рандом)
+            if not move_path or len(move_path) < 3:
+                print("[AI] C++ returned empty. Using DEFAULT move (0-0-1).")
+                move_path = [0, 0, 1]
+
+        # === 3. ВИКОНАННЯ ===
+        self.clear_selection()
+
+        try:
+            idx_n1 = move_path[0]
+            idx_op1 = move_path[1]
+            idx_n2 = move_path[2]
+
+            if idx_n1 >= len(numb_data) or idx_n2 >= len(numb_data) or idx_op1 >= len(op_data):
+                print(f"[AI Critical] Invalid indexes: {idx_n1}, {idx_op1}, {idx_n2}")
+                return False
+
+            if not self.select_card('numb', idx_n1): return False
+            if not self.select_card('op', idx_op1): return False
+            if not self.select_card('numb', idx_n2): return False
+
+            i = 3
+            while i < len(move_path):
+                idx_op = move_path[i]
+                idx_n = move_path[i + 1]
+                if idx_op < len(op_data) and idx_n < len(numb_data):
+                    self.select_card('op', idx_op)
+                    self.select_card('numb', idx_n)
+                i += 2
 
             return True
-        else:
-            print("[AI] I give up! Skipping turn...")
+        except IndexError:
+            self.clear_selection()
             return False
 
+    def get_state_data(self):
+        """Повертає стан цього конкретного гравця/бота як словник"""
+        hand = self.player.get_hand()
+
+        numb_cards = [hand.get_numb_card(i).get_numb() for i in range(hand.get_numb_count())]
+        op_cards = [hand.get_operator_card(i).get_op() for i in range(hand.get_operator_count())]
+        special_cards = [hand.get_special_card(i).get_numb() for i in range(hand.get_special_count())]
+
+        # Важливо зберегти і ворога, бо у кожного гравця він свій
+        enemy_num = self.enemy.get_number() if self.enemy else 0
+
+        return {
+            "player_name": self.player_name,
+            "hp": self.player.get_hp(),
+            "max_hp": self.player.get_hp(),
+            # Або додати get_max_hp в C++, або вважати поточне за базу при завантаженні
+            "level": self.level,
+            "difficulty": self.difficulty,
+            "enemy_number": enemy_num,
+            "hand": {
+                "numb": numb_cards,
+                "op": op_cards,
+                "special": special_cards
+            },
+            # Зберігаємо також стан вибору, якщо гравець зберігся посеред ходу
+            "round_won": self.round_won
+            }
+
+    def restore_state(self, data):
+        """Відновлює стан з переданого словника (Надійна версія)"""
+        import PyAPI_py as api
+
+        print(f"--- Restoring state for {data.get('player_name', 'Unknown')} ---")
+
+        try:
+            # 1. Відновлюємо параметри Python
+            self.player_name = data["player_name"]
+            self.level = data["level"]
+            self.difficulty = data["difficulty"]
+            self.round_won = data.get("round_won", False)
+
+            # 2. Створюємо НОВУ пусту руку (C++)
+            self.hand = api.Hand()
+
+            # 3. Наповнюємо руку картами (Важливий порядок!)
+            # Числа
+            for val in data["hand"]["numb"]:
+                self.hand.add_numb_card(api.Numb_card(float(val)))
+
+            # Оператори
+            for op_char in data["hand"]["op"]:
+                # Беремо перший символ рядка
+                self.hand.add_operator_card(api.Operator_card(op_char[0]))
+
+            # Спецкарти
+            for val in data["hand"]["special"]:
+                self.hand.add_special_card(api.Special_card(float(val)))
+
+            print(f"Cards restored. Numb: {self.hand.get_numb_count()}")
+
+            # 4. Створюємо Гравця, передаючи йому ВЖЕ ЗАПОВНЕНУ руку
+            saved_hp = int(data["hp"])
+            # Передаємо saved_hp і як поточне, і як максимальне (щоб не було багів)
+            self.player = api.Player(self.player_name, saved_hp, saved_hp, self.level, self.difficulty, self.hand)
+
+            # 5. Створюємо Гру
+            self.game = api.Game(self.player)
+
+            # 6. Відновлюємо Ворога (Математичний трюк)
+            # Створюємо ворога (він згенерується випадково на основі карт)
+            self.enemy = self.game.create_enemy()
+
+            # Вираховуємо різницю, щоб отримати точне старе число
+            current_val = self.enemy.get_number()
+            target_val = float(data["enemy_number"])
+            diff = target_val - current_val
+
+            # Застосовуємо різницю
+            self.enemy.set_number(diff)
+            self.target_number = self.enemy.get_number()
+
+            print(f"Enemy restored. Target: {self.target_number}")
+
+            # 7. Фінальні штрихи
+            self.state = GameState.PLAYING
+            self.clear_selection()
+
+            return True
+
+        except Exception as e:
+            print(f"CRITICAL ERROR in restore_state: {e}")
+            import traceback
+            traceback.print_exc()  # Виведе повну помилку в консоль
+            return False
 
     def start_card_selection(self):
         self.state = GameState.CARD_SELECTION
