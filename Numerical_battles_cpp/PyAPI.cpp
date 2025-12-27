@@ -44,10 +44,15 @@ PYBIND11_MODULE(PyAPI_py, m) {
         .def("get_operator_count", &Hand::get_operator_count)
         .def("get_special_count", &Hand::get_special_count)
 
-        // Отримання конкретних карт (reference, щоб Python не видаляв їх)
+        // Отримання конкретних карт
         .def("get_numb_card", &Hand::get_numb_card, py::return_value_policy::reference)
         .def("get_operator_card", &Hand::get_operator_card, py::return_value_policy::reference)
-        .def("get_special_card", &Hand::get_special_card, py::return_value_policy::reference);
+        .def("get_special_card", &Hand::get_special_card, py::return_value_policy::reference)
+
+        // === ДОДАЙ ЦІ РЯДКИ (ЦЕ ВИПРАВИТЬ ПОМИЛКУ) ===
+        .def("add_numb_card", &Hand::add_numb_card)
+        .def("add_operator_card", &Hand::add_operator_card)
+        .def("add_special_card", &Hand::add_special_card);
 
 
     // --- 3. ГРАВЕЦЬ (Player) ---
